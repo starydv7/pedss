@@ -6,18 +6,15 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  Alert,
 } from 'react-native';
 
-const AssessmentScreen = ({ navigation, route }) => {
-  const { patientData } = route.params || {};
-  
+const AssessmentScreen = ({ navigation }) => {
   const [parameters, setParameters] = useState({
-    P: null, // Premorbid PCPCS
-    E: null, // EEG Background
-    D: null, // Drug Refractoriness
-    S1: null, // Semiology
-    S2: { shock: false, intubation: false, mods: false }, // Critical Sickness
+    P: null,
+    E: null,
+    D: null,
+    S1: null,
+    S2: { shock: false, intubation: false, mods: false },
   });
 
   const [currentScore, setCurrentScore] = useState(0);
@@ -37,347 +34,174 @@ const AssessmentScreen = ({ navigation, route }) => {
 
   const calculateScore = (params) => {
     let score = 0;
-    
-    // P (Premorbid PCPCS)
     if (params.P !== null) score += params.P;
-    
-    // E (EEG Background)
     if (params.E !== null) score += params.E;
-    
-    // D (Drug Refractoriness)
     if (params.D !== null) score += params.D;
-    
-    // S1 (Semiology)
     if (params.S1 !== null) score += params.S1;
-    
-    // S2 (Critical Sickness) - any condition = 1 point
     if (params.S2.shock || params.S2.intubation || params.S2.mods) score += 1;
-    
     setCurrentScore(score);
   };
 
-  const validateAndProceed = () => {
-    if (parameters.P === null) {
-      Alert.alert('Required Field', 'Please select Premorbid PCPCS score');
-      return;
-    }
-    if (parameters.E === null) {
-      Alert.alert('Required Field', 'Please select EEG Background');
-      return;
-    }
-    if (parameters.D === null) {
-      Alert.alert('Required Field', 'Please select Drug Refractoriness');
-      return;
-    }
-    if (parameters.S1 === null) {
-      Alert.alert('Required Field', 'Please select Seizure Semiology');
-      return;
-    }
-
+  const handleCalculate = () => {
     const results = {
-      patientData,
-      parameters,
       score: currentScore,
       riskLevel: currentScore >= 4 ? 'High' : currentScore >= 3 ? 'Medium' : 'Low',
     };
-
-    navigation.navigate('Results', { results });
+    navigation.navigate('results');
   };
-
-  const ParameterCard = ({ title, icon, children }) => (
-    <View style={styles.parameterCard}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardIcon}>{icon}</Text>
-        <Text style={styles.cardTitle}>{title}</Text>
-      </View>
-      {children}
-    </View>
-  );
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>← Back</Text>
-          </TouchableOpacity>
           <Text style={styles.headerTitle}>Clinical Assessment</Text>
-          <View style={styles.progressIndicator}>
-            <Text style={styles.progressText}>2/4</Text>
-          </View>
         </View>
 
-        {/* Progress Bar */}
-        <View style={styles.progressBarContainer}>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: '50%' }]} />
-          </View>
-        </View>
-
-        {/* Current Score Display */}
         <View style={styles.scoreDisplay}>
           <Text style={styles.scoreLabel}>Current PEDSS Score</Text>
           <Text style={styles.scoreValue}>{currentScore}/6</Text>
         </View>
 
         {/* P - Premorbid PCPCS */}
-        <ParameterCard title="P - Premorbid PCPCS" icon="🧠">
-          <Text style={styles.parameterDescription}>
-            Pediatric Cerebral Performance Category Scale before SE
-          </Text>
-          <View style={styles.optionGroup}>
+        <View style={styles.parameterCard}>
+          <Text style={styles.cardTitle}>🧠 P - Premorbid PCPCS</Text>
+          <Text style={styles.cardDescription}>Pediatric Cerebral Performance Category Scale</Text>
+          <View style={styles.options}>
             <TouchableOpacity
-              style={[
-                styles.option,
-                parameters.P === 0 && styles.optionSelected,
-              ]}
+              style={[styles.option, parameters.P === 0 && styles.optionSelected]}
               onPress={() => updateParameter('P', 0)}
             >
-              <Text style={[
-                styles.optionText,
-                parameters.P === 0 && styles.optionTextSelected,
-              ]}>
+              <Text style={[styles.optionText, parameters.P === 0 && styles.optionTextSelected]}>
                 ≤2 (Normal) - Score: 0
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.option,
-                parameters.P === 1 && styles.optionSelected,
-              ]}
+              style={[styles.option, parameters.P === 1 && styles.optionSelected]}
               onPress={() => updateParameter('P', 1)}
             >
-              <Text style={[
-                styles.optionText,
-                parameters.P === 1 && styles.optionTextSelected,
-              ]}>
+              <Text style={[styles.optionText, parameters.P === 1 && styles.optionTextSelected]}>
                 >2 (Abnormal) - Score: 1
               </Text>
             </TouchableOpacity>
           </View>
-        </ParameterCard>
+        </View>
 
         {/* E - EEG Background */}
-        <ParameterCard title="E - EEG Background" icon="📊">
-          <Text style={styles.parameterDescription}>
-            30-minute EEG at 6-12 hours
-          </Text>
-          <View style={styles.radioGroup}>
+        <View style={styles.parameterCard}>
+          <Text style={styles.cardTitle}>📊 E - EEG Background</Text>
+          <Text style={styles.cardDescription}>30-minute EEG at 6-12 hours (paucity of sleep markers with continuous diffuse delta activity or low voltage slow unreactive activity or NCSE)</Text>
+          <View style={styles.options}>
             <TouchableOpacity
-              style={[
-                styles.radioOption,
-                parameters.E === 0 && styles.radioOptionSelected,
-              ]}
+              style={[styles.option, parameters.E === 0 && styles.optionSelected]}
               onPress={() => updateParameter('E', 0)}
             >
-              <View style={[
-                styles.radioCircle,
-                parameters.E === 0 && styles.radioCircleSelected,
-              ]}>
-                {parameters.E === 0 && <View style={styles.radioInner} />}
-              </View>
-              <Text style={[
-                styles.radioText,
-                parameters.E === 0 && styles.radioTextSelected,
-              ]}>
+              <Text style={[styles.optionText, parameters.E === 0 && styles.optionTextSelected]}>
                 Normal - Score: 0
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.radioOption,
-                parameters.E === 1 && styles.radioOptionSelected,
-              ]}
+              style={[styles.option, parameters.E === 1 && styles.optionSelected]}
               onPress={() => updateParameter('E', 1)}
             >
-              <View style={[
-                styles.radioCircle,
-                parameters.E === 1 && styles.radioCircleSelected,
-              ]}>
-                {parameters.E === 1 && <View style={styles.radioInner} />}
-              </View>
-              <Text style={[
-                styles.radioText,
-                parameters.E === 1 && styles.radioTextSelected,
-              ]}>
+              <Text style={[styles.optionText, parameters.E === 1 && styles.optionTextSelected]}>
                 Abnormal - Score: 1
               </Text>
             </TouchableOpacity>
           </View>
-        </ParameterCard>
+        </View>
 
         {/* D - Drug Refractoriness */}
-        <ParameterCard title="D - Drug Refractoriness" icon="💊">
-          <Text style={styles.parameterDescription}>
-            Response to Benzodiazepine (BDZR) or Refractory SE (RSE)
-          </Text>
-          <View style={styles.radioGroup}>
+        <View style={styles.parameterCard}>
+          <Text style={styles.cardTitle}>💊 D - Drug Refractoriness</Text>
+          <Text style={styles.cardDescription}>Response to treatment</Text>
+          <View style={styles.options}>
             <TouchableOpacity
-              style={[
-                styles.radioOption,
-                parameters.D === 0 && styles.radioOptionSelected,
-              ]}
+              style={[styles.option, parameters.D === 0 && styles.optionSelected]}
               onPress={() => updateParameter('D', 0)}
             >
-              <View style={[
-                styles.radioCircle,
-                parameters.D === 0 && styles.radioCircleSelected,
-              ]}>
-                {parameters.D === 0 && <View style={styles.radioInner} />}
-              </View>
-              <Text style={[
-                styles.radioText,
-                parameters.D === 0 && styles.radioTextSelected,
-              ]}>
+              <Text style={[styles.optionText, parameters.D === 0 && styles.optionTextSelected]}>
                 None - Score: 0
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.radioOption,
-                parameters.D === 1 && styles.radioOptionSelected,
-              ]}
+              style={[styles.option, parameters.D === 1 && styles.optionSelected]}
               onPress={() => updateParameter('D', 1)}
             >
-              <View style={[
-                styles.radioCircle,
-                parameters.D === 1 && styles.radioCircleSelected,
-              ]}>
-                {parameters.D === 1 && <View style={styles.radioInner} />}
-              </View>
-              <Text style={[
-                styles.radioText,
-                parameters.D === 1 && styles.radioTextSelected,
-              ]}>
+              <Text style={[styles.optionText, parameters.D === 1 && styles.optionTextSelected]}>
                 BDZR - Score: 1
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.radioOption,
-                parameters.D === 2 && styles.radioOptionSelected,
-              ]}
+              style={[styles.option, parameters.D === 2 && styles.optionSelected]}
               onPress={() => updateParameter('D', 2)}
             >
-              <View style={[
-                styles.radioCircle,
-                parameters.D === 2 && styles.radioCircleSelected,
-              ]}>
-                {parameters.D === 2 && <View style={styles.radioInner} />}
-              </View>
-              <Text style={[
-                styles.radioText,
-                parameters.D === 2 && styles.radioTextSelected,
-              ]}>
+              <Text style={[styles.optionText, parameters.D === 2 && styles.optionTextSelected]}>
                 RSE - Score: 2
               </Text>
             </TouchableOpacity>
           </View>
-        </ParameterCard>
+        </View>
 
         {/* S1 - Seizure Semiology */}
-        <ParameterCard title="S - Seizure Semiology" icon="🧠">
-          <Text style={styles.parameterDescription}>
-            Seizure type classification
-          </Text>
-          <View style={styles.radioGroup}>
+        <View style={styles.parameterCard}>
+          <Text style={styles.cardTitle}>🧠 S - Seizure Semiology</Text>
+          <Text style={styles.cardDescription}>Seizure type classification</Text>
+          <View style={styles.options}>
             <TouchableOpacity
-              style={[
-                styles.radioOption,
-                parameters.S1 === 0 && styles.radioOptionSelected,
-              ]}
+              style={[styles.option, parameters.S1 === 0 && styles.optionSelected]}
               onPress={() => updateParameter('S1', 0)}
             >
-              <View style={[
-                styles.radioCircle,
-                parameters.S1 === 0 && styles.radioCircleSelected,
-              ]}>
-                {parameters.S1 === 0 && <View style={styles.radioInner} />}
-              </View>
-              <Text style={[
-                styles.radioText,
-                parameters.S1 === 0 && styles.radioTextSelected,
-              ]}>
+              <Text style={[styles.optionText, parameters.S1 === 0 && styles.optionTextSelected]}>
                 Focal - Score: 0
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.radioOption,
-                parameters.S1 === 1 && styles.radioOptionSelected,
-              ]}
+              style={[styles.option, parameters.S1 === 1 && styles.optionSelected]}
               onPress={() => updateParameter('S1', 1)}
             >
-              <View style={[
-                styles.radioCircle,
-                parameters.S1 === 1 && styles.radioCircleSelected,
-              ]}>
-                {parameters.S1 === 1 && <View style={styles.radioInner} />}
-              </View>
-              <Text style={[
-                styles.radioText,
-                parameters.S1 === 1 && styles.radioTextSelected,
-              ]}>
+              <Text style={[styles.optionText, parameters.S1 === 1 && styles.optionTextSelected]}>
                 Generalized - Score: 1
               </Text>
             </TouchableOpacity>
           </View>
-        </ParameterCard>
+        </View>
 
         {/* S2 - Critical Sickness */}
-        <ParameterCard title="S - Critical Sickness" icon="🚨">
-          <Text style={styles.parameterDescription}>
-            Presence of critical conditions (any checked = Score: 1)
-          </Text>
-          <View style={styles.checkboxGroup}>
+        <View style={styles.parameterCard}>
+          <Text style={styles.cardTitle}>🚨 S - Critical Sickness</Text>
+          <Text style={styles.cardDescription}>Presence of critical conditions</Text>
+          <View style={styles.checkboxes}>
             <TouchableOpacity
-              style={styles.checkboxOption}
+              style={styles.checkboxItem}
               onPress={() => updateCriticalSickness('shock')}
             >
-              <View style={[
-                styles.checkbox,
-                parameters.S2.shock && styles.checkboxSelected,
-              ]}>
+              <View style={[styles.checkbox, parameters.S2.shock && styles.checkboxSelected]}>
                 {parameters.S2.shock && <Text style={styles.checkmark}>✓</Text>}
               </View>
               <Text style={styles.checkboxText}>Shock</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.checkboxOption}
+              style={styles.checkboxItem}
               onPress={() => updateCriticalSickness('intubation')}
             >
-              <View style={[
-                styles.checkbox,
-                parameters.S2.intubation && styles.checkboxSelected,
-              ]}>
+              <View style={[styles.checkbox, parameters.S2.intubation && styles.checkboxSelected]}>
                 {parameters.S2.intubation && <Text style={styles.checkmark}>✓</Text>}
               </View>
               <Text style={styles.checkboxText}>ET Intubation</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.checkboxOption}
+              style={styles.checkboxItem}
               onPress={() => updateCriticalSickness('mods')}
             >
-              <View style={[
-                styles.checkbox,
-                parameters.S2.mods && styles.checkboxSelected,
-              ]}>
+              <View style={[styles.checkbox, parameters.S2.mods && styles.checkboxSelected]}>
                 {parameters.S2.mods && <Text style={styles.checkmark}>✓</Text>}
               </View>
               <Text style={styles.checkboxText}>MODS</Text>
             </TouchableOpacity>
           </View>
-        </ParameterCard>
+        </View>
 
-        {/* Calculate Button */}
-        <TouchableOpacity
-          style={styles.calculateButton}
-          onPress={validateAndProceed}
-        >
+        <TouchableOpacity style={styles.calculateButton} onPress={handleCalculate}>
           <Text style={styles.calculateButtonText}>📊 Calculate PEDSS Score</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -394,53 +218,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    padding: 20,
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
   },
-  backButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-  },
-  backButtonText: {
-    color: '#2563EB',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#1E293B',
-  },
-  progressIndicator: {
-    backgroundColor: '#2563EB',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  progressText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  progressBarContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-  },
-  progressBar: {
-    height: 4,
-    backgroundColor: '#E5E7EB',
-    borderRadius: 2,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#2563EB',
-    borderRadius: 2,
+    textAlign: 'center',
   },
   scoreDisplay: {
     backgroundColor: 'white',
@@ -449,10 +236,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
@@ -471,39 +255,26 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginHorizontal: 20,
     marginBottom: 16,
-    borderRadius: 16,
     padding: 20,
+    borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  cardIcon: {
-    fontSize: 24,
-    marginRight: 12,
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1E293B',
-    flex: 1,
+    marginBottom: 8,
   },
-  parameterDescription: {
+  cardDescription: {
     fontSize: 14,
     color: '#6B7280',
     marginBottom: 16,
-    lineHeight: 20,
   },
-  optionGroup: {
+  options: {
     gap: 12,
   },
   option: {
@@ -525,58 +296,12 @@ const styles = StyleSheet.create({
     color: '#2563EB',
     fontWeight: '600',
   },
-  radioGroup: {
+  checkboxes: {
     gap: 12,
   },
-  radioOption: {
+  checkboxItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    backgroundColor: '#F9FAFB',
-  },
-  radioOptionSelected: {
-    borderColor: '#2563EB',
-    backgroundColor: '#EFF6FF',
-  },
-  radioCircle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#D1D5DB',
-    marginRight: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  radioCircleSelected: {
-    borderColor: '#2563EB',
-  },
-  radioInner: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#2563EB',
-  },
-  radioText: {
-    fontSize: 16,
-    color: '#374151',
-    flex: 1,
-  },
-  radioTextSelected: {
-    color: '#2563EB',
-    fontWeight: '600',
-  },
-  checkboxGroup: {
-    gap: 12,
-  },
-  checkboxOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
   },
   checkbox: {
     width: 24,
@@ -609,10 +334,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     shadowColor: '#2563EB',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
@@ -625,4 +347,3 @@ const styles = StyleSheet.create({
 });
 
 export default AssessmentScreen;
-

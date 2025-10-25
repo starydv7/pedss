@@ -6,12 +6,27 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  Alert,
 } from 'react-native';
 
-const ResultsScreen = ({ navigation, route }) => {
-  const { results } = route.params || {};
-  const { patientData, parameters, score, riskLevel } = results || {};
+const ResultsScreen = ({ navigation }) => {
+  // Mock results data
+  const results = {
+    score: 4,
+    riskLevel: 'High',
+    patientData: {
+      name: 'John Doe',
+      age: '24 months',
+      gender: 'Male',
+      date: '2024-01-15'
+    },
+    parameters: {
+      P: 1,
+      E: 1,
+      D: 2,
+      S1: 0,
+      S2: 0
+    }
+  };
 
   const getRiskColor = (level) => {
     switch (level) {
@@ -43,135 +58,105 @@ const ResultsScreen = ({ navigation, route }) => {
     }
   };
 
-  const handleSaveResult = () => {
-    Alert.alert(
-      'Save Result',
-      'Assessment result saved successfully!',
-      [{ text: 'OK' }]
-    );
+  const handleSave = () => {
+    alert('Assessment result saved successfully!');
   };
 
-  const handleExportResult = () => {
-    Alert.alert(
-      'Export Result',
-      'PDF report generated and ready for sharing.',
-      [{ text: 'OK' }]
-    );
+  const handleExport = () => {
+    alert('PDF report generated and ready for sharing.');
   };
 
   const handleNewAssessment = () => {
-    navigation.navigate('PatientInfo');
-  };
-
-  const ParameterBreakdown = () => {
-    const breakdown = [
-      { label: 'P (PCPCS)', value: parameters?.P || 0, max: 1 },
-      { label: 'E (EEG)', value: parameters?.E || 0, max: 1 },
-      { label: 'D (Drug)', value: parameters?.D || 0, max: 2 },
-      { label: 'S (Semiology)', value: parameters?.S1 || 0, max: 1 },
-      { label: 'S (Sickness)', value: (parameters?.S2?.shock || parameters?.S2?.intubation || parameters?.S2?.mods) ? 1 : 0, max: 1 },
-    ];
-
-    return (
-      <View style={styles.breakdownContainer}>
-        {breakdown.map((item, index) => (
-          <View key={index} style={styles.breakdownItem}>
-            <Text style={styles.breakdownLabel}>{item.label}</Text>
-            <View style={styles.breakdownBar}>
-              <View 
-                style={[
-                  styles.breakdownFill, 
-                  { 
-                    width: `${(item.value / item.max) * 100}%`,
-                    backgroundColor: item.value > 0 ? '#2563EB' : '#E5E7EB'
-                  }
-                ]} 
-              />
-            </View>
-            <Text style={styles.breakdownValue}>{item.value}/{item.max}</Text>
-          </View>
-        ))}
-      </View>
-    );
+    navigation.navigate('patient');
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>← Back</Text>
-          </TouchableOpacity>
           <Text style={styles.headerTitle}>Assessment Results</Text>
-          <View style={styles.progressIndicator}>
-            <Text style={styles.progressText}>3/4</Text>
-          </View>
         </View>
 
-        {/* Progress Bar */}
-        <View style={styles.progressBarContainer}>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: '75%' }]} />
-          </View>
+        {/* Patient Summary */}
+        <View style={styles.patientSummary}>
+          <Text style={styles.summaryTitle}>Patient Summary</Text>
+          <Text style={styles.summaryText}>
+            {results.patientData.name} | {results.patientData.age} | {results.patientData.gender}
+          </Text>
+          <Text style={styles.summaryDate}>{results.patientData.date}</Text>
         </View>
-
-        {/* Patient Info Summary */}
-        {patientData && (
-          <View style={styles.patientSummary}>
-            <Text style={styles.summaryTitle}>Patient Summary</Text>
-            <Text style={styles.summaryText}>
-              {patientData.name} | {patientData.age} months | {patientData.gender}
-            </Text>
-            <Text style={styles.summaryDate}>{patientData.assessmentDate}</Text>
-          </View>
-        )}
 
         {/* Main Score Display */}
         <View style={styles.scoreContainer}>
           <Text style={styles.scoreLabel}>🎯 PEDSS Score</Text>
-          <Text style={styles.scoreValue}>{score}/6</Text>
+          <Text style={styles.scoreValue}>{results.score}/6</Text>
           <View style={styles.scoreProgressBar}>
-            <View 
-              style={[
-                styles.scoreProgressFill, 
-                { width: `${(score / 6) * 100}%` }
-              ]} 
-            />
+            <View style={[styles.scoreProgressFill, { width: `${(results.score / 6) * 100}%` }]} />
           </View>
         </View>
 
         {/* Risk Assessment */}
-        <View style={[styles.riskContainer, { borderColor: getRiskColor(riskLevel) }]}>
+        <View style={[styles.riskContainer, { borderColor: getRiskColor(results.riskLevel) }]}>
           <View style={styles.riskHeader}>
-            <Text style={styles.riskIcon}>{getRiskIcon(riskLevel)}</Text>
-            <Text style={[styles.riskTitle, { color: getRiskColor(riskLevel) }]}>
-              {riskLevel.toUpperCase()} {riskLevel === 'High' ? 'MORTALITY RISK' : 'RISK'}
+            <Text style={styles.riskIcon}>{getRiskIcon(results.riskLevel)}</Text>
+            <Text style={[styles.riskTitle, { color: getRiskColor(results.riskLevel) }]}>
+              {results.riskLevel.toUpperCase()} {results.riskLevel === 'High' ? 'MORTALITY RISK' : 'RISK'}
             </Text>
           </View>
           <Text style={styles.riskDescription}>
-            {getRiskDescription(score)}
+            {getRiskDescription(results.score)}
           </Text>
         </View>
 
         {/* Parameter Breakdown */}
         <View style={styles.breakdownCard}>
           <Text style={styles.breakdownTitle}>📋 Parameter Breakdown</Text>
-          <ParameterBreakdown />
+          <View style={styles.breakdownItem}>
+            <Text style={styles.breakdownLabel}>P (PCPCS)</Text>
+            <View style={styles.breakdownBar}>
+              <View style={[styles.breakdownFill, { width: `${(results.parameters.P / 1) * 100}%` }]} />
+            </View>
+            <Text style={styles.breakdownValue}>{results.parameters.P}/1</Text>
+          </View>
+          <View style={styles.breakdownItem}>
+            <Text style={styles.breakdownLabel}>E (EEG)</Text>
+            <View style={styles.breakdownBar}>
+              <View style={[styles.breakdownFill, { width: `${(results.parameters.E / 1) * 100}%` }]} />
+            </View>
+            <Text style={styles.breakdownValue}>{results.parameters.E}/1</Text>
+          </View>
+          <View style={styles.breakdownItem}>
+            <Text style={styles.breakdownLabel}>D (Drug)</Text>
+            <View style={styles.breakdownBar}>
+              <View style={[styles.breakdownFill, { width: `${(results.parameters.D / 2) * 100}%` }]} />
+            </View>
+            <Text style={styles.breakdownValue}>{results.parameters.D}/2</Text>
+          </View>
+          <View style={styles.breakdownItem}>
+            <Text style={styles.breakdownLabel}>S (Semiology)</Text>
+            <View style={styles.breakdownBar}>
+              <View style={[styles.breakdownFill, { width: `${(results.parameters.S1 / 1) * 100}%` }]} />
+            </View>
+            <Text style={styles.breakdownValue}>{results.parameters.S1}/1</Text>
+          </View>
+          <View style={styles.breakdownItem}>
+            <Text style={styles.breakdownLabel}>S (Sickness)</Text>
+            <View style={styles.breakdownBar}>
+              <View style={[styles.breakdownFill, { width: `${(results.parameters.S2 / 1) * 100}%` }]} />
+            </View>
+            <Text style={styles.breakdownValue}>{results.parameters.S2}/1</Text>
+          </View>
         </View>
 
         {/* Clinical Interpretation */}
         <View style={styles.interpretationCard}>
           <Text style={styles.interpretationTitle}>📝 Clinical Interpretation</Text>
           <Text style={styles.interpretationText}>
-            {score >= 4 ? (
+            {results.score >= 4 ? (
               'This patient demonstrates high-risk factors including abnormal premorbid status and drug refractoriness. Immediate intensive care unit admission with continuous monitoring is strongly recommended. Consider early intervention strategies and prepare for potential complications.'
-            ) : score >= 3 ? (
+            ) : results.score >= 3 ? (
               'The patient shows concerning features that suggest a poor outcome is likely. Close monitoring in a high-dependency unit is advised with aggressive management of underlying conditions and seizure control.'
-            ) : score >= 1 ? (
+            ) : results.score >= 1 ? (
               'Moderate risk factors are present. Standard care protocols should be followed with regular reassessment and monitoring for any deterioration.'
             ) : (
               'Low risk profile suggests good prognosis with routine care. Continue standard monitoring and treatment protocols.'
@@ -181,37 +166,20 @@ const ResultsScreen = ({ navigation, route }) => {
 
         {/* Action Buttons */}
         <View style={styles.actionButtons}>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={handleSaveResult}
-          >
+          <TouchableOpacity style={styles.actionButton} onPress={handleSave}>
             <Text style={styles.actionButtonIcon}>💾</Text>
             <Text style={styles.actionButtonText}>Save</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={handleExportResult}
-          >
+          <TouchableOpacity style={styles.actionButton} onPress={handleExport}>
             <Text style={styles.actionButtonIcon}>📤</Text>
             <Text style={styles.actionButtonText}>Export</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={handleNewAssessment}
-          >
+          <TouchableOpacity style={styles.actionButton} onPress={handleNewAssessment}>
             <Text style={styles.actionButtonIcon}>🔄</Text>
             <Text style={styles.actionButtonText}>New Case</Text>
           </TouchableOpacity>
-        </View>
-
-        {/* Disclaimer */}
-        <View style={styles.disclaimer}>
-          <Text style={styles.disclaimerTitle}>⚠️ Medical Disclaimer</Text>
-          <Text style={styles.disclaimerText}>
-            This tool is for clinical decision support only. Always use clinical judgment and consider individual patient circumstances when making treatment decisions.
-          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -227,53 +195,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    padding: 20,
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
   },
-  backButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-  },
-  backButtonText: {
-    color: '#2563EB',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#1E293B',
-  },
-  progressIndicator: {
-    backgroundColor: '#2563EB',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  progressText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  progressBarContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-  },
-  progressBar: {
-    height: 4,
-    backgroundColor: '#E5E7EB',
-    borderRadius: 2,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#2563EB',
-    borderRadius: 2,
+    textAlign: 'center',
   },
   patientSummary: {
     backgroundColor: 'white',
@@ -281,10 +212,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
@@ -312,10 +240,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 8,
@@ -351,10 +276,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 2,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
@@ -384,10 +306,7 @@ const styles = StyleSheet.create({
     padding: 24,
     borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
@@ -398,12 +317,10 @@ const styles = StyleSheet.create({
     color: '#1E293B',
     marginBottom: 20,
   },
-  breakdownContainer: {
-    gap: 16,
-  },
   breakdownItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 16,
   },
   breakdownLabel: {
     width: 100,
@@ -421,6 +338,7 @@ const styles = StyleSheet.create({
   },
   breakdownFill: {
     height: '100%',
+    backgroundColor: '#2563EB',
     borderRadius: 4,
   },
   breakdownValue: {
@@ -437,10 +355,7 @@ const styles = StyleSheet.create({
     padding: 24,
     borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
@@ -472,10 +387,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
@@ -489,27 +401,6 @@ const styles = StyleSheet.create({
     color: '#374151',
     fontWeight: '600',
   },
-  disclaimer: {
-    backgroundColor: '#FEF3C7',
-    marginHorizontal: 20,
-    marginBottom: 32,
-    padding: 16,
-    borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#F59E0B',
-  },
-  disclaimerTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#92400E',
-    marginBottom: 8,
-  },
-  disclaimerText: {
-    fontSize: 13,
-    color: '#92400E',
-    lineHeight: 18,
-  },
 });
 
 export default ResultsScreen;
-
