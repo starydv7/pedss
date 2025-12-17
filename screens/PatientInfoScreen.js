@@ -17,14 +17,28 @@ const PatientInfoScreen = ({ navigation }) => {
   const [assessmentDate, setAssessmentDate] = useState(new Date().toLocaleDateString());
 
   const validateAndProceed = () => {
+    // Validate patient name
     if (!patientName.trim()) {
       Alert.alert('Required Field', 'Please enter patient name or ID');
       return;
     }
+
+    // Validate age - must be a number
     if (!patientAge.trim()) {
-      Alert.alert('Required Field', 'Please enter patient age');
+      Alert.alert('Required Field', 'Please enter patient age in months');
       return;
     }
+
+    const ageNumber = parseInt(patientAge.trim(), 10);
+    if (isNaN(ageNumber) || ageNumber < 0 || ageNumber > 240) {
+      Alert.alert(
+        'Invalid Age',
+        'Please enter a valid age in months (0-240 months, i.e., 0-20 years)'
+      );
+      return;
+    }
+
+    // Validate gender
     if (!selectedGender) {
       Alert.alert('Required Field', 'Please select patient gender');
       return;
@@ -32,10 +46,10 @@ const PatientInfoScreen = ({ navigation }) => {
 
     // Store patient data and navigate to assessment
     const patientData = {
-      name: patientName,
-      age: patientAge,
+      name: patientName.trim(),
+      age: ageNumber.toString(),
       gender: selectedGender,
-      assessmentDate: assessmentDate,
+      date: assessmentDate,
     };
 
     navigation.navigate('Assessment', { patientData });
@@ -43,21 +57,24 @@ const PatientInfoScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>← Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Patient Information</Text>
-          <View style={styles.progressIndicator}>
-            <Text style={styles.progressText}>1/4</Text>
-          </View>
-        </View>
+      {/* Fixed Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.navigate('Home')}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Patient Information</Text>
+        <TouchableOpacity
+          style={styles.menuButton}
+          onPress={() => navigation.navigate('Home')}
+        >
+          <Text style={styles.menuButtonText}>☰</Text>
+        </TouchableOpacity>
+      </View>
 
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Progress Bar */}
         <View style={styles.progressBarContainer}>
           <View style={styles.progressBar}>
@@ -89,11 +106,16 @@ const PatientInfoScreen = ({ navigation }) => {
             <Text style={styles.inputLabel}>Age (months) *</Text>
             <TextInput
               style={styles.textInput}
-              placeholder="Enter age in months"
+              placeholder="Enter age in months (e.g., 24)"
               value={patientAge}
-              onChangeText={setPatientAge}
+              onChangeText={(text) => {
+                // Only allow numbers
+                const numericText = text.replace(/[^0-9]/g, '');
+                setPatientAge(numericText);
+              }}
               keyboardType="numeric"
               placeholderTextColor="#9CA3AF"
+              maxLength={3}
             />
             <Text style={styles.inputHint}>Enter age in months (e.g., 24 for 2 years)</Text>
           </View>
@@ -215,10 +237,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
+    zIndex: 1000,
   },
   backButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
+    minWidth: 60,
   },
   backButtonText: {
     color: '#2563EB',
@@ -229,17 +253,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1E293B',
+    flex: 1,
+    textAlign: 'center',
   },
-  progressIndicator: {
-    backgroundColor: '#2563EB',
+  menuButton: {
+    paddingVertical: 8,
     paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
+    minWidth: 40,
+    alignItems: 'flex-end',
   },
-  progressText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
+  menuButtonText: {
+    color: '#2563EB',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   progressBarContainer: {
     paddingHorizontal: 20,

@@ -39,37 +39,41 @@ const HomeScreen = ({ navigation }) => {
   const quickActions = [
     {
       icon: '🚀',
-      title: 'New Assessment',
+      title: 'New',
+      subtitle: 'Assessment',
       action: () => navigation.navigate('PatientInfo'),
     },
     {
       icon: '📈',
-      title: 'View Statistics',
-      action: () => alert('Statistics coming soon!'),
+      title: 'View',
+      subtitle: 'Statistics',
+      action: () => navigation.navigate('CaseHistory'),
     },
     {
       icon: '⚙️',
       title: 'Settings',
+      subtitle: '',
       action: () => navigation.navigate('Settings'),
     },
   ];
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <Text style={styles.headerTitle}>🏥 PEDSS</Text>
-            <Text style={styles.headerSubtitle}>Outcome Prediction Tool</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.profileButton}
-            onPress={() => navigation.navigate('Profile')}
-          >
-            <Text style={styles.profileIcon}>👤</Text>
-          </TouchableOpacity>
+      {/* Fixed Header */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <Text style={styles.headerTitle}>🏥 PEDSS</Text>
+          <Text style={styles.headerSubtitle}>Outcome Prediction Tool</Text>
         </View>
+        <TouchableOpacity
+          style={styles.profileButton}
+          onPress={() => navigation.navigate('Profile')}
+        >
+          <Text style={styles.profileIcon}>👤</Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
 
         {/* Welcome Section */}
         <View style={styles.welcomeSection}>
@@ -91,6 +95,7 @@ const HomeScreen = ({ navigation }) => {
               >
                 <Text style={styles.quickActionIcon}>{action.icon}</Text>
                 <Text style={styles.quickActionTitle}>{action.title}</Text>
+                {action.subtitle ? <Text style={styles.quickActionSubtitle}>{action.subtitle}</Text> : null}
               </TouchableOpacity>
             ))}
           </View>
@@ -152,11 +157,11 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>AIIMS × IIITD Collaboration</Text>
-          <Text style={styles.footerSubtext}>Medical-grade outcome prediction</Text>
-        </View>
+                    {/* Footer */}
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>AIIMS, New Delhi × IIIT Delhi</Text>
+              <Text style={styles.footerSubtext}>Medical-grade outcome prediction</Text>
+            </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -177,6 +182,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 20,
     backgroundColor: '#2563EB',
+    zIndex: 1000,
   },
   headerLeft: {
     flex: 1,
@@ -263,10 +269,17 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   quickActionTitle: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#374151',
     fontWeight: '600',
     textAlign: 'center',
+    marginTop: 4,
+  },
+  quickActionSubtitle: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginTop: 2,
   },
   featuresList: {
     gap: 12,

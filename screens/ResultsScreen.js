@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,23 +6,33 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
+import StorageService from '../services/StorageService';
+import ExportService from '../services/ExportService';
 
-const ResultsScreen = ({ navigation }) => {
-  // Mock results data
+const ResultsScreen = ({ navigation, route }) => {
+  const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Get results from route params, use defaults if not provided
+  const routeParams = route?.params || {};
+  
   const results = {
-    score: 4,
-    riskLevel: 'High',
-    patientData: {
-      name: 'John Doe',
-      age: '24 months',
-      gender: 'Male',
-      date: '2024-01-15'
+    score: routeParams.score || 0,
+    riskLevel: routeParams.riskLevel || 'Low',
+    patientData: routeParams.patientData || {
+      name: 'N/A',
+      age: 'N/A',
+      gender: 'N/A',
+      date: new Date().toLocaleDateString()
     },
-    parameters: {
-      P: 1,
-      E: 1,
-      D: 2,
+    parameters: routeParams.parameters || {
+      P: 0,
+      E: 0,
+      D: 0,
       S1: 0,
       S2: 0
     }
@@ -58,24 +68,93 @@ const ResultsScreen = ({ navigation }) => {
     }
   };
 
-  const handleSave = () => {
-    alert('Assessment result saved successfully!');
+  const handleSave = async () => {
+    if (isSaved) {
+      Alert.alert('Already Saved', 'This assessment has already been saved.');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await StorageService.saveAssessment(results);
+      setIsSaved(true);
+      Alert.alert('Success', 'Assessment saved successfully!', [
+        { text: 'OK', onPress: () => navigation.navigate('CaseHistory') }
+      ]);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save assessment. Please try again.');
+      console.error('Save error:', error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleExport = () => {
-    alert('PDF report generated and ready for sharing.');
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      Alert.alert(
+        'Export Format',
+        'Choose export format:',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'CSV',
+            onPress: async () => {
+              try {
+                const result = await ExportService.exportAssessmentCSV(results);
+                if (result.success) {
+                  Alert.alert('Success', result.message);
+                } else {
+                  Alert.alert('Error', result.message);
+                }
+              } catch (error) {
+                Alert.alert('Error', 'Failed to export CSV. Please try again.');
+              } finally {
+                setIsExporting(false);
+              }
+            }
+          },
+          {
+            text: 'PDF Report',
+            onPress: async () => {
+              try {
+                const result = await ExportService.exportAssessmentPDF(results);
+                if (result.success) {
+                  Alert.alert('Success', result.message);
+                } else {
+                  Alert.alert('Error', result.message);
+                }
+              } catch (error) {
+                Alert.alert('Error', 'Failed to export report. Please try again.');
+              } finally {
+                setIsExporting(false);
+              }
+            }
+          }
+        ],
+        { cancelable: true, onDismiss: () => setIsExporting(false) }
+      );
+    } catch (error) {
+      Alert.alert('Error', 'Failed to export. Please try again.');
+      setIsExporting(false);
+    }
   };
 
   const handleNewAssessment = () => {
-    navigation.navigate('patient');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'PatientInfo' }],
+    });
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Fixed Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Assessment Results</Text>
+      </View>
+
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Assessment Results</Text>
-        </View>
 
         {/* Patient Summary */}
         <View style={styles.patientSummary}>
@@ -166,14 +245,34 @@ const ResultsScreen = ({ navigation }) => {
 
         {/* Action Buttons */}
         <View style={styles.actionButtons}>
-          <TouchableOpacity style={styles.actionButton} onPress={handleSave}>
-            <Text style={styles.actionButtonIcon}>💾</Text>
-            <Text style={styles.actionButtonText}>Save</Text>
+          <TouchableOpacity 
+            style={[styles.actionButton, isSaved && styles.actionButtonSaved]} 
+            onPress={handleSave}
+            disabled={isSaving || isSaved}
+          >
+            {isSaving ? (
+              <ActivityIndicator size="small" color="#2563EB" />
+            ) : (
+              <>
+                <Text style={styles.actionButtonIcon}>{isSaved ? '✅' : '💾'}</Text>
+                <Text style={styles.actionButtonText}>{isSaved ? 'Saved' : 'Save'}</Text>
+              </>
+            )}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton} onPress={handleExport}>
-            <Text style={styles.actionButtonIcon}>📤</Text>
-            <Text style={styles.actionButtonText}>Export</Text>
+          <TouchableOpacity 
+            style={styles.actionButton} 
+            onPress={handleExport}
+            disabled={isExporting}
+          >
+            {isExporting ? (
+              <ActivityIndicator size="small" color="#2563EB" />
+            ) : (
+              <>
+                <Text style={styles.actionButtonIcon}>📤</Text>
+                <Text style={styles.actionButtonText}>Export</Text>
+              </>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionButton} onPress={handleNewAssessment}>
@@ -199,6 +298,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
+    zIndex: 1000,
   },
   headerTitle: {
     fontSize: 24,
@@ -295,9 +395,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   riskDescription: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#374151',
-    lineHeight: 24,
+    lineHeight: 20,
   },
   breakdownCard: {
     backgroundColor: 'white',
@@ -400,6 +500,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#374151',
     fontWeight: '600',
+  },
+  actionButtonSaved: {
+    backgroundColor: '#D1FAE5',
+    borderColor: '#16A34A',
   },
 });
 

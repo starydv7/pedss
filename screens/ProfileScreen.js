@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,26 +8,71 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
+import StorageService from '../services/StorageService';
 
 const ProfileScreen = ({ navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState({
-    name: 'Dr. John Smith',
-    title: 'Pediatric Neurologist',
-    hospital: 'AIIMS Delhi',
-    email: 'john.smith@aiims.edu',
-    phone: '+91 98765 43210',
-    experience: '15 years',
-    specializations: ['Pediatric Neurology', 'Epilepsy', 'Critical Care'],
+    name: '',
+    title: '',
+    hospital: '',
+    email: '',
+    phone: '',
+  });
+  const [stats, setStats] = useState({
+    totalAssessments: 0,
+    highRiskCases: 0,
+    mediumRiskCases: 0,
+    lowRiskCases: 0,
   });
 
   const [tempData, setTempData] = useState(profileData);
 
-  const handleSave = () => {
-    setProfileData(tempData);
-    setIsEditing(false);
-    Alert.alert('Success', 'Profile updated successfully!');
+  useEffect(() => {
+    loadProfile();
+    loadStatistics();
+  }, []);
+
+  const loadProfile = async () => {
+    try {
+      const savedProfile = await StorageService.getProfile();
+      if (savedProfile) {
+        setProfileData(savedProfile);
+        setTempData(savedProfile);
+      }
+    } catch (error) {
+      console.error('Error loading profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadStatistics = async () => {
+    try {
+      const statistics = await StorageService.getStatistics();
+      setStats({
+        totalAssessments: statistics.total,
+        highRiskCases: statistics.highRisk,
+        mediumRiskCases: statistics.mediumRisk,
+        lowRiskCases: statistics.lowRisk,
+      });
+    } catch (error) {
+      console.error('Error loading statistics:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      await StorageService.saveProfile(tempData);
+      setProfileData(tempData);
+      setIsEditing(false);
+      Alert.alert('Success', 'Profile saved successfully!');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save profile. Please try again.');
+    }
   };
 
   const handleCancel = () => {
@@ -43,65 +88,78 @@ const ProfileScreen = ({ navigation }) => {
     setTempData({ ...tempData, [field]: value });
   };
 
-  const stats = [
-    { label: 'Total Assessments', value: '247' },
-    { label: 'High Risk Cases', value: '23' },
-    { label: 'Accuracy Rate', value: '94.2%' },
-    { label: 'Experience', value: '15 years' },
+  const statsData = [
+    { label: 'Total Assessments', value: stats.totalAssessments.toString() },
+    { label: 'High Risk Cases', value: stats.highRiskCases.toString() },
+    { label: 'Medium Risk Cases', value: stats.mediumRiskCases.toString() },
+    { label: 'Low Risk Cases', value: stats.lowRiskCases.toString() },
   ];
 
-  const achievements = [
-    { icon: '🏆', title: 'Top Performer', description: 'Highest accuracy in Q4 2023' },
-    { icon: '📊', title: 'Data Expert', description: 'Over 200 assessments completed' },
-    { icon: '🎯', title: 'Precision Master', description: '94%+ accuracy rate maintained' },
-  ];
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#2563EB" />
+          <Text style={styles.loadingText}>Loading profile...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Fixed Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Profile</Text>
+        <TouchableOpacity
+          style={styles.settingsButton}
+          onPress={() => navigation.navigate('Settings')}
+        >
+          <Text style={styles.settingsButtonText}>⚙️</Text>
+        </TouchableOpacity>
+      </View>
+
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>← Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Profile</Text>
-          <TouchableOpacity
-            style={styles.settingsButton}
-            onPress={() => navigation.navigate('Settings')}
-          >
-            <Text style={styles.settingsButtonText}>⚙️</Text>
-          </TouchableOpacity>
-        </View>
 
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>👨‍⚕️</Text>
+              <Text style={styles.avatarText}>
+                {isEditing && tempData.name 
+                  ? tempData.name.charAt(0).toUpperCase() 
+                  : profileData.name 
+                    ? profileData.name.charAt(0).toUpperCase() 
+                    : '👨‍⚕️'}
+              </Text>
             </View>
-            <TouchableOpacity style={styles.cameraButton}>
-              <Text style={styles.cameraIcon}>📷</Text>
-            </TouchableOpacity>
           </View>
           <Text style={styles.profileName}>
-            {isEditing ? tempData.name : profileData.name}
+            {isEditing ? tempData.name || 'Enter Your Name' : profileData.name || 'Enter Your Name'}
           </Text>
-          <Text style={styles.profileTitle}>
-            {isEditing ? tempData.title : profileData.title}
-          </Text>
-          <Text style={styles.profileHospital}>
-            {isEditing ? tempData.hospital : profileData.hospital}
-          </Text>
+          {profileData.title ? (
+            <Text style={styles.profileTitle}>
+              {isEditing ? tempData.title : profileData.title}
+            </Text>
+          ) : null}
+          {profileData.hospital ? (
+            <Text style={styles.profileHospital}>
+              {isEditing ? tempData.hospital : profileData.hospital}
+            </Text>
+          ) : null}
         </View>
 
         {/* Statistics */}
         <View style={styles.statsSection}>
-          <Text style={styles.sectionTitle}>Statistics</Text>
+          <Text style={styles.sectionTitle}>Your Statistics</Text>
           <View style={styles.statsGrid}>
-            {stats.map((stat, index) => (
+            {statsData.map((stat, index) => (
               <View key={index} style={styles.statCard}>
                 <Text style={styles.statValue}>{stat.value}</Text>
                 <Text style={styles.statLabel}>{stat.label}</Text>
@@ -132,15 +190,17 @@ const ProfileScreen = ({ navigation }) => {
 
           <View style={styles.infoCard}>
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Full Name</Text>
+              <Text style={styles.infoLabel}>Full Name *</Text>
               {isEditing ? (
                 <TextInput
                   style={styles.infoInput}
                   value={tempData.name}
                   onChangeText={(text) => handleChangeText('name', text)}
+                  placeholder="Enter your name"
+                  placeholderTextColor="#9CA3AF"
                 />
               ) : (
-                <Text style={styles.infoValue}>{profileData.name}</Text>
+                <Text style={styles.infoValue}>{profileData.name || 'Not set'}</Text>
               )}
             </View>
 
@@ -151,9 +211,11 @@ const ProfileScreen = ({ navigation }) => {
                   style={styles.infoInput}
                   value={tempData.title}
                   onChangeText={(text) => handleChangeText('title', text)}
+                  placeholder="e.g., Pediatric Neurologist"
+                  placeholderTextColor="#9CA3AF"
                 />
               ) : (
-                <Text style={styles.infoValue}>{profileData.title}</Text>
+                <Text style={styles.infoValue}>{profileData.title || 'Not set'}</Text>
               )}
             </View>
 
@@ -164,9 +226,11 @@ const ProfileScreen = ({ navigation }) => {
                   style={styles.infoInput}
                   value={tempData.hospital}
                   onChangeText={(text) => handleChangeText('hospital', text)}
+                  placeholder="e.g., AIIMS, New Delhi"
+                  placeholderTextColor="#9CA3AF"
                 />
               ) : (
-                <Text style={styles.infoValue}>{profileData.hospital}</Text>
+                <Text style={styles.infoValue}>{profileData.hospital || 'Not set'}</Text>
               )}
             </View>
 
@@ -178,9 +242,11 @@ const ProfileScreen = ({ navigation }) => {
                   value={tempData.email}
                   onChangeText={(text) => handleChangeText('email', text)}
                   keyboardType="email-address"
+                  placeholder="your.email@example.com"
+                  placeholderTextColor="#9CA3AF"
                 />
               ) : (
-                <Text style={styles.infoValue}>{profileData.email}</Text>
+                <Text style={styles.infoValue}>{profileData.email || 'Not set'}</Text>
               )}
             </View>
 
@@ -192,46 +258,16 @@ const ProfileScreen = ({ navigation }) => {
                   value={tempData.phone}
                   onChangeText={(text) => handleChangeText('phone', text)}
                   keyboardType="phone-pad"
+                  placeholder="+91 98765 43210"
+                  placeholderTextColor="#9CA3AF"
                 />
               ) : (
-                <Text style={styles.infoValue}>{profileData.phone}</Text>
+                <Text style={styles.infoValue}>{profileData.phone || 'Not set'}</Text>
               )}
             </View>
-
-            <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Experience</Text>
-              <Text style={styles.infoValue}>{profileData.experience}</Text>
-            </View>
           </View>
         </View>
 
-        {/* Specializations */}
-        <View style={styles.specializationsSection}>
-          <Text style={styles.sectionTitle}>Specializations</Text>
-          <View style={styles.specializationsContainer}>
-            {profileData.specializations.map((spec, index) => (
-              <View key={index} style={styles.specializationTag}>
-                <Text style={styles.specializationText}>{spec}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* Achievements */}
-        <View style={styles.achievementsSection}>
-          <Text style={styles.sectionTitle}>Achievements</Text>
-          <View style={styles.achievementsList}>
-            {achievements.map((achievement, index) => (
-              <View key={index} style={styles.achievementCard}>
-                <Text style={styles.achievementIcon}>{achievement.icon}</Text>
-                <View style={styles.achievementContent}>
-                  <Text style={styles.achievementTitle}>{achievement.title}</Text>
-                  <Text style={styles.achievementDescription}>{achievement.description}</Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        </View>
 
         {/* Quick Actions */}
         <View style={styles.actionsSection}>
@@ -243,13 +279,6 @@ const ProfileScreen = ({ navigation }) => {
             <Text style={styles.actionText}>View Case History</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => Alert.alert('Export', 'Profile data exported successfully!')}
-          >
-            <Text style={styles.actionIcon}>📤</Text>
-            <Text style={styles.actionText}>Export Profile</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -273,6 +302,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
+    zIndex: 1000,
   },
   backButton: {
     paddingVertical: 8,
@@ -304,6 +334,7 @@ const styles = StyleSheet.create({
   avatarContainer: {
     position: 'relative',
     marginBottom: 16,
+    alignItems: 'center',
   },
   avatar: {
     width: 100,
@@ -316,24 +347,19 @@ const styles = StyleSheet.create({
     borderColor: '#2563EB',
   },
   avatarText: {
-    fontSize: 40,
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#2563EB',
   },
-  cameraButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#2563EB',
+  loadingContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'white',
   },
-  cameraIcon: {
+  loadingText: {
+    marginTop: 16,
     fontSize: 16,
-    color: 'white',
+    color: '#6B7280',
   },
   profileName: {
     fontSize: 24,

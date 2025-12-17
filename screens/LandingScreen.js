@@ -71,7 +71,7 @@ const LandingScreen = ({ navigation }) => {
 
         {/* Contributors Link */}
         <TouchableOpacity
-          onPress={() => alert('Contributors:\n\nAIIMS, New Delhi\nIIITD\n\nVersion 1.0 | 2024')}
+          onPress={() => alert('Contributors:\n\nAIIMS, New Delhi\nIIIT Delhi\n\nVersion 1.0 | 2024')}
         >
           <Text style={styles.contributorsLink}>👥 Contributors</Text>
         </TouchableOpacity>

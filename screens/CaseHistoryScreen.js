@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,69 +8,69 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
+import StorageService from '../services/StorageService';
+import ExportService from '../services/ExportService';
 
 const CaseHistoryScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Mock data for case history
-  const caseHistory = [
-    {
-      id: '001',
-      patientName: 'John Doe',
-      age: '24 months',
-      gender: 'Male',
-      date: '2024-01-15',
-      time: '14:30',
-      score: 4,
-      riskLevel: 'High',
-      status: 'Completed'
-    },
-    {
-      id: '002',
-      patientName: 'Jane Smith',
-      age: '18 months',
-      gender: 'Female',
-      date: '2024-01-14',
-      time: '09:15',
-      score: 2,
-      riskLevel: 'Low',
-      status: 'Completed'
-    },
-    {
-      id: '003',
-      patientName: 'Mike Johnson',
-      age: '36 months',
-      gender: 'Male',
-      date: '2024-01-13',
-      time: '16:45',
-      score: 3,
-      riskLevel: 'Medium',
-      status: 'Completed'
-    },
-    {
-      id: '004',
-      patientName: 'Sarah Wilson',
-      age: '12 months',
-      gender: 'Female',
-      date: '2024-01-12',
-      time: '11:20',
-      score: 1,
-      riskLevel: 'Low',
-      status: 'Completed'
-    },
-    {
-      id: '005',
-      patientName: 'David Brown',
-      age: '30 months',
-      gender: 'Male',
-      date: '2024-01-11',
-      time: '13:10',
-      score: 5,
-      riskLevel: 'High',
-      status: 'Completed'
+  const [caseHistory, setCaseHistory] = useState([]);
+  const [statistics, setStatistics] = useState({
+    total: 0,
+    highRisk: 0,
+    avgScore: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  useEffect(() => {
+    loadCaseHistory();
+  }, []);
+
+  const loadCaseHistory = async () => {
+    try {
+      setLoading(true);
+      const assessments = await StorageService.getAllAssessments();
+      const stats = await StorageService.getStatistics();
+      
+      // Transform assessments to case history format
+      const formattedCases = assessments.map(assessment => {
+        const createdAt = new Date(assessment.createdAt || Date.now());
+        return {
+          id: assessment.id,
+          patientName: assessment.patientData?.name || 'Unknown',
+          age: assessment.patientData?.age ? `${assessment.patientData.age} months` : 'N/A',
+          gender: assessment.patientData?.gender || 'N/A',
+          date: createdAt.toLocaleDateString(),
+          time: createdAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          score: assessment.score || 0,
+          riskLevel: assessment.riskLevel || 'Low',
+          status: 'Completed',
+          fullData: assessment, // Store full data for detail view
+        };
+      }).sort((a, b) => {
+        // Sort by date, newest first
+        return new Date(b.fullData.createdAt) - new Date(a.fullData.createdAt);
+      });
+      
+      setCaseHistory(formattedCases);
+      setStatistics(stats);
+    } catch (error) {
+      console.error('Error loading case history:', error);
+      Alert.alert('Error', 'Failed to load case history. Please try again.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
     }
-  ];
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadCaseHistory();
+  };
 
   const getRiskColor = (level) => {
     switch (level) {
@@ -96,50 +96,122 @@ const CaseHistoryScreen = ({ navigation }) => {
   );
 
   const handleCasePress = (caseItem) => {
+    if (caseItem.fullData) {
+      // Navigate to Results screen with saved data
+      navigation.navigate('Results', caseItem.fullData);
+    } else {
+      Alert.alert(
+        'Case Details',
+        `Patient: ${caseItem.patientName}\nAge: ${caseItem.age}\nScore: ${caseItem.score}/6\nRisk: ${caseItem.riskLevel}\nDate: ${caseItem.date} ${caseItem.time}`,
+        [{ text: 'OK' }]
+      );
+    }
+  };
+
+  const handleDeleteCase = async (caseId) => {
     Alert.alert(
-      'Case Details',
-      `Patient: ${caseItem.patientName}\nAge: ${caseItem.age}\nScore: ${caseItem.score}/6\nRisk: ${caseItem.riskLevel}\nDate: ${caseItem.date} ${caseItem.time}`,
+      'Delete Assessment',
+      'Are you sure you want to delete this assessment? This action cannot be undone.',
       [
-        { text: 'OK' },
-        { text: 'View Details', onPress: () => console.log('View details') }
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await StorageService.deleteAssessment(caseId);
+              Alert.alert('Success', 'Assessment deleted successfully.');
+              loadCaseHistory();
+            } catch (error) {
+              Alert.alert('Error', 'Failed to delete assessment. Please try again.');
+            }
+          }
+        }
       ]
     );
   };
 
-  const handleExportHistory = () => {
-    Alert.alert('Export', 'Case history exported successfully!');
+  const handleExportHistory = async () => {
+    setExporting(true);
+    try {
+      const result = await ExportService.exportAllAssessmentsCSV();
+      if (result.success) {
+        Alert.alert('Success', result.message);
+      } else {
+        Alert.alert('Error', result.message);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to export case history. Please try again.');
+    } finally {
+      setExporting(false);
+    }
   };
 
   const handleClearHistory = () => {
     Alert.alert(
-      'Clear History',
-      'Are you sure you want to clear all case history?',
+      'Clear All History',
+      'Are you sure you want to delete ALL case history? This action cannot be undone.',
       [
-        { text: 'Cancel' },
-        { text: 'Clear', style: 'destructive', onPress: () => console.log('Cleared') }
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Clear All',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await StorageService.clearAllAssessments();
+              Alert.alert('Success', 'All case history cleared successfully.');
+              loadCaseHistory();
+            } catch (error) {
+              Alert.alert('Error', 'Failed to clear history. Please try again.');
+            }
+          }
+        }
       ]
     );
   };
 
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#2563EB" />
+          <Text style={styles.loadingText}>Loading case history...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>← Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Case History</Text>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={handleExportHistory}
-          >
-            <Text style={styles.actionButtonText}>📤</Text>
-          </TouchableOpacity>
-        </View>
+      {/* Fixed Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Case History</Text>
+        <TouchableOpacity
+          style={styles.headerActionButton}
+          onPress={handleExportHistory}
+          disabled={exporting || caseHistory.length === 0}
+        >
+          {exporting ? (
+            <ActivityIndicator size="small" color="#2563EB" />
+          ) : (
+            <Text style={styles.headerActionButtonText}>📤</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView 
+        style={styles.scrollView} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
 
         {/* Search Section */}
         <View style={styles.searchSection}>
@@ -160,19 +232,15 @@ const CaseHistoryScreen = ({ navigation }) => {
           <Text style={styles.statsTitle}>Statistics</Text>
           <View style={styles.statsGrid}>
             <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{caseHistory.length}</Text>
+              <Text style={styles.statNumber}>{statistics.total}</Text>
               <Text style={styles.statLabel}>Total Cases</Text>
             </View>
             <View style={styles.statCard}>
-              <Text style={styles.statNumber}>
-                {caseHistory.filter(c => c.riskLevel === 'High').length}
-              </Text>
+              <Text style={styles.statNumber}>{statistics.highRisk}</Text>
               <Text style={styles.statLabel}>High Risk</Text>
             </View>
             <View style={styles.statCard}>
-              <Text style={styles.statNumber}>
-                {Math.round(caseHistory.reduce((acc, c) => acc + c.score, 0) / caseHistory.length * 10) / 10}
-              </Text>
+              <Text style={styles.statNumber}>{statistics.avgScore}</Text>
               <Text style={styles.statLabel}>Avg Score</Text>
             </View>
           </View>
@@ -192,6 +260,7 @@ const CaseHistoryScreen = ({ navigation }) => {
               key={caseItem.id}
               style={styles.caseCard}
               onPress={() => handleCasePress(caseItem)}
+              onLongPress={() => handleDeleteCase(caseItem.id)}
             >
               <View style={styles.caseHeader}>
                 <View style={styles.caseInfo}>
@@ -227,10 +296,22 @@ const CaseHistoryScreen = ({ navigation }) => {
           {filteredCases.length === 0 && (
             <View style={styles.emptyState}>
               <Text style={styles.emptyIcon}>📋</Text>
-              <Text style={styles.emptyTitle}>No Cases Found</Text>
-              <Text style={styles.emptyText}>
-                {searchQuery ? 'Try adjusting your search terms' : 'No case history available yet'}
+              <Text style={styles.emptyTitle}>
+                {searchQuery ? 'No Cases Found' : 'No Case History'}
               </Text>
+              <Text style={styles.emptyText}>
+                {searchQuery 
+                  ? 'Try adjusting your search terms' 
+                  : 'Start by creating a new assessment to see it here'}
+              </Text>
+              {!searchQuery && (
+                <TouchableOpacity
+                  style={styles.emptyActionButton}
+                  onPress={() => navigation.navigate('PatientInfo')}
+                >
+                  <Text style={styles.emptyActionText}>Create New Assessment</Text>
+                </TouchableOpacity>
+              )}
             </View>
           )}
         </View>
@@ -273,6 +354,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
+    zIndex: 1000,
+  },
+  headerActionButton: {
+    padding: 8,
+  },
+  headerActionButtonText: {
+    fontSize: 20,
   },
   backButton: {
     paddingVertical: 8,
@@ -496,6 +584,29 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
     textAlign: 'center',
+    marginBottom: 20,
+  },
+  emptyActionButton: {
+    backgroundColor: '#2563EB',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  emptyActionText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#6B7280',
   },
   actionSection: {
     padding: 20,

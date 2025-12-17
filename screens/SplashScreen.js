@@ -1,17 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   StyleSheet,
   SafeAreaView,
-  Image,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 const SplashScreen = ({ navigation }) => {
+  useEffect(() => {
+    // Auto-navigate to Landing after 2 seconds
+    const timer = setTimeout(() => {
+      navigation.replace('Landing');
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [navigation]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -29,7 +37,7 @@ const SplashScreen = ({ navigation }) => {
           <View style={styles.institutionRow}>
             <View style={styles.institutionBadge}>
               <Text style={styles.institutionEmoji}>🏛️</Text>
-              <Text style={styles.institutionText}>AIIMS</Text>
+              <Text style={styles.institutionText}>AIIMS, New Delhi</Text>
             </View>
             <Text style={styles.collaborationSymbol}>×</Text>
             <View style={styles.institutionBadge}>
@@ -38,44 +46,14 @@ const SplashScreen = ({ navigation }) => {
             </View>
           </View>
           <Text style={styles.collaborationText}>
-            Pediatric Emergency Department{'\n'}Seizure Score Calculator
+            Pediatric Convulsive Status Epilepticus{'\n'}Prediction Score
           </Text>
         </View>
 
-        {/* Features Section */}
-        <View style={styles.featuresSection}>
-          <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>⚡</Text>
-            <Text style={styles.featureText}>Quick Assessment</Text>
-          </View>
-          <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>📊</Text>
-            <Text style={styles.featureText}>Risk Prediction</Text>
-          </View>
-          <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>🎯</Text>
-            <Text style={styles.featureText}>Clinical Accuracy</Text>
-          </View>
-        </View>
-
-        {/* Action Buttons */}
-        <View style={styles.buttonSection}>
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={() => navigation.navigate('PatientInfo')}
-          >
-            <Text style={styles.primaryButtonText}>🚀 Start Assessment</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={() => {
-              // Tutorial functionality
-              alert('Tutorial coming soon!');
-            }}
-          >
-            <Text style={styles.secondaryButtonText}>📖 Quick Tutorial</Text>
-          </TouchableOpacity>
+        {/* Loading Indicator */}
+        <View style={styles.loadingSection}>
+          <ActivityIndicator size="large" color="white" />
+          <Text style={styles.loadingText}>Loading...</Text>
         </View>
 
         {/* Footer */}
@@ -167,60 +145,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
   },
-  featuresSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+  loadingSection: {
+    alignItems: 'center',
     marginVertical: 40,
   },
-  featureItem: {
-    alignItems: 'center',
-  },
-  featureIcon: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  featureText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  buttonSection: {
-    gap: 16,
-  },
-  primaryButton: {
-    backgroundColor: 'white',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 30,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  primaryButtonText: {
-    color: '#2563EB',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  secondaryButton: {
-    backgroundColor: 'transparent',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 25,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-  },
-  secondaryButtonText: {
+  loadingText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
+    marginTop: 16,
+    fontWeight: '500',
   },
   footer: {
     alignItems: 'center',

@@ -6,9 +6,10 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Alert,
 } from 'react-native';
 
-const AssessmentScreen = ({ navigation }) => {
+const AssessmentScreen = ({ navigation, route }) => {
   const [parameters, setParameters] = useState({
     P: null,
     E: null,
@@ -42,20 +43,59 @@ const AssessmentScreen = ({ navigation }) => {
     setCurrentScore(score);
   };
 
+  const validateAssessment = () => {
+    const missing = [];
+    if (parameters.P === null) missing.push('P (Premorbid PCPCS)');
+    if (parameters.E === null) missing.push('E (EEG Background)');
+    if (parameters.D === null) missing.push('D (Drug Refractoriness)');
+    if (parameters.S1 === null) missing.push('S1 (Seizure Semiology)');
+    
+    if (missing.length > 0) {
+      Alert.alert(
+        'Incomplete Assessment',
+        `Please complete the following parameters:\n\n${missing.join('\n')}`,
+        [{ text: 'OK' }]
+      );
+      return false;
+    }
+    return true;
+  };
+
   const handleCalculate = () => {
+    // Validate all required parameters are selected
+    if (!validateAssessment()) {
+      return;
+    }
+
+    // Get patient data from route params if available
+    const patientData = route?.params?.patientData || {};
+
+    // Calculate S2 score (1 if any condition is true, 0 otherwise)
+    const s2Score = (parameters.S2.shock || parameters.S2.intubation || parameters.S2.mods) ? 1 : 0;
+    
     const results = {
       score: currentScore,
       riskLevel: currentScore >= 4 ? 'High' : currentScore >= 3 ? 'Medium' : 'Low',
+      parameters: {
+        P: parameters.P,
+        E: parameters.E,
+        D: parameters.D,
+        S1: parameters.S1,
+        S2: s2Score,
+      },
+      patientData: patientData,
     };
-    navigation.navigate('results');
+    navigation.navigate('Results', results);
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Fixed Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Clinical Assessment</Text>
+      </View>
+
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Clinical Assessment</Text>
-        </View>
 
         <View style={styles.scoreDisplay}>
           <Text style={styles.scoreLabel}>Current PEDSS Score</Text>
@@ -222,6 +262,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
+    zIndex: 1000,
   },
   headerTitle: {
     fontSize: 24,
