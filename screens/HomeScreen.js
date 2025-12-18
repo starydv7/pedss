@@ -94,8 +94,12 @@ const HomeScreen = ({ navigation }) => {
                 onPress={action.action}
               >
                 <Text style={styles.quickActionIcon}>{action.icon}</Text>
-                <Text style={styles.quickActionTitle}>{action.title}</Text>
-                {action.subtitle ? <Text style={styles.quickActionSubtitle}>{action.subtitle}</Text> : null}
+                <View style={styles.quickActionTextContainer}>
+                  <Text style={styles.quickActionTitle} numberOfLines={1}>{action.title}</Text>
+                  {action.subtitle ? (
+                    <Text style={styles.quickActionSubtitle} numberOfLines={1}>{action.subtitle}</Text>
+                  ) : null}
+                </View>
               </TouchableOpacity>
             ))}
           </View>
@@ -254,7 +258,9 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
+    justifyContent: 'center',
     marginHorizontal: 4,
+    minHeight: 100,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -268,15 +274,20 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 8,
   },
+  quickActionTextContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   quickActionTitle: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#374151',
     fontWeight: '600',
     textAlign: 'center',
     marginTop: 4,
   },
   quickActionSubtitle: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#6B7280',
     textAlign: 'center',
     marginTop: 2,

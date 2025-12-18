@@ -175,14 +175,17 @@ const ResultsScreen = ({ navigation, route }) => {
         </View>
 
         {/* Risk Assessment */}
-        <View style={[styles.riskContainer, { borderColor: getRiskColor(results.riskLevel) }]}>
+        <View style={[styles.riskContainer, { 
+          borderColor: getRiskColor(results.riskLevel),
+          backgroundColor: results.riskLevel === 'Medium' ? '#FEF3C7' : results.riskLevel === 'High' ? '#FEE2E2' : '#D1FAE5'
+        }]}>
           <View style={styles.riskHeader}>
             <Text style={styles.riskIcon}>{getRiskIcon(results.riskLevel)}</Text>
-            <Text style={[styles.riskTitle, { color: getRiskColor(results.riskLevel) }]}>
+            <Text style={[styles.riskTitle, { color: getRiskColor(results.riskLevel) }]} numberOfLines={2}>
               {results.riskLevel.toUpperCase()} {results.riskLevel === 'High' ? 'MORTALITY RISK' : 'RISK'}
             </Text>
           </View>
-          <Text style={styles.riskDescription}>
+          <Text style={styles.riskDescription} numberOfLines={3}>
             {getRiskDescription(results.score)}
           </Text>
         </View>
@@ -369,10 +372,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   riskContainer: {
-    backgroundColor: 'white',
     marginHorizontal: 20,
     marginBottom: 20,
-    padding: 24,
+    padding: 20,
     borderRadius: 16,
     borderWidth: 2,
     shadowColor: '#000',
@@ -380,6 +382,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
+    minHeight: 100,
   },
   riskHeader: {
     flexDirection: 'row',
@@ -391,13 +394,16 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   riskTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
+    flexShrink: 1,
+    flexWrap: 'wrap',
   },
   riskDescription: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#374151',
-    lineHeight: 20,
+    lineHeight: 18,
+    flexWrap: 'wrap',
   },
   breakdownCard: {
     backgroundColor: 'white',
