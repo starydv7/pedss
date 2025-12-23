@@ -79,7 +79,15 @@ const ResultsScreen = ({ navigation, route }) => {
       await StorageService.saveAssessment(results);
       setIsSaved(true);
       Alert.alert('Success', 'Assessment saved successfully!', [
-        { text: 'OK', onPress: () => navigation.navigate('CaseHistory') }
+        { 
+          text: 'OK', 
+          onPress: () => {
+            const parent = navigation.getParent();
+            if (parent) {
+              parent.navigate('CaseHistory');
+            }
+          }
+        }
       ]);
     } catch (error) {
       Alert.alert('Error', 'Failed to save assessment. Please try again.');

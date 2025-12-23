@@ -14,19 +14,19 @@ const HomeScreen = ({ navigation }) => {
       icon: '📝',
       title: 'Patient Information',
       description: 'Enter basic patient demographics and case details',
-      action: () => navigation.navigate('PatientInfo'),
+      action: () => navigation.navigate('MainTabs', { screen: 'PatientInfo' }),
     },
     {
       icon: '⚙️',
       title: 'Clinical Assessment',
       description: 'Input PEDSS parameters for outcome prediction',
-      action: () => navigation.navigate('Assessment'),
+      action: () => navigation.navigate('MainTabs', { screen: 'Assessment' }),
     },
     {
       icon: '📊',
       title: 'Results & Analysis',
       description: 'View risk assessment and clinical interpretation',
-      action: () => navigation.navigate('Results'),
+      action: () => navigation.navigate('MainTabs', { screen: 'Results' }),
     },
     {
       icon: '📚',
@@ -36,26 +36,6 @@ const HomeScreen = ({ navigation }) => {
     },
   ];
 
-  const quickActions = [
-    {
-      icon: '🚀',
-      title: 'New',
-      subtitle: 'Assessment',
-      action: () => navigation.navigate('PatientInfo'),
-    },
-    {
-      icon: '📈',
-      title: 'View',
-      subtitle: 'Statistics',
-      action: () => navigation.navigate('CaseHistory'),
-    },
-    {
-      icon: '⚙️',
-      title: 'Settings',
-      subtitle: '',
-      action: () => navigation.navigate('Settings'),
-    },
-  ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -67,7 +47,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
         <TouchableOpacity
           style={styles.profileButton}
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => navigation.navigate('MainTabs', { screen: 'Profile' })}
         >
           <Text style={styles.profileIcon}>👤</Text>
         </TouchableOpacity>
@@ -81,28 +61,6 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.welcomeText}>
             Pediatric Emergency Department Seizure Score calculator for accurate outcome prediction
           </Text>
-        </View>
-
-        {/* Quick Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.quickActionsGrid}>
-            {quickActions.map((action, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.quickActionCard}
-                onPress={action.action}
-              >
-                <Text style={styles.quickActionIcon}>{action.icon}</Text>
-                <View style={styles.quickActionTextContainer}>
-                  <Text style={styles.quickActionTitle} numberOfLines={1}>{action.title}</Text>
-                  {action.subtitle ? (
-                    <Text style={styles.quickActionSubtitle} numberOfLines={1}>{action.subtitle}</Text>
-                  ) : null}
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
         </View>
 
         {/* Main Features */}

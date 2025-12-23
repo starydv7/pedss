@@ -6,12 +6,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from '../screens/SplashScreen';
 import LandingScreen from '../screens/LandingScreen';
 import HomeScreen from '../screens/HomeScreen';
-import PatientInfoScreen from '../screens/PatientInfoScreen';
-import AssessmentScreen from '../screens/AssessmentScreen';
-import ResultsScreen from '../screens/ResultsScreen';
 import CaseHistoryScreen from '../screens/CaseHistoryScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+
+// Import bottom tab navigator
+import BottomTabNavigator from './BottomTabNavigator';
 
 const Stack = createStackNavigator();
 
@@ -81,16 +80,9 @@ export default function AppNavigator() {
           component={HomeScreen}
         />
         <Stack.Screen 
-          name={ROUTES.PATIENT_INFO} 
-          component={PatientInfoScreen}
-        />
-        <Stack.Screen 
-          name={ROUTES.ASSESSMENT} 
-          component={AssessmentScreen}
-        />
-        <Stack.Screen 
-          name={ROUTES.RESULTS} 
-          component={ResultsScreen}
+          name="MainTabs" 
+          component={BottomTabNavigator}
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
           name={ROUTES.CASE_HISTORY} 
@@ -99,10 +91,6 @@ export default function AppNavigator() {
         <Stack.Screen 
           name={ROUTES.SETTINGS} 
           component={SettingsScreen}
-        />
-        <Stack.Screen 
-          name={ROUTES.PROFILE} 
-          component={ProfileScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

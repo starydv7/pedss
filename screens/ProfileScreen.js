@@ -119,7 +119,12 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.headerTitle}>Profile</Text>
         <TouchableOpacity
           style={styles.settingsButton}
-          onPress={() => navigation.navigate('Settings')}
+          onPress={() => {
+            const parent = navigation.getParent();
+            if (parent) {
+              parent.navigate('Settings');
+            }
+          }}
         >
           <Text style={styles.settingsButtonText}>⚙️</Text>
         </TouchableOpacity>
@@ -273,7 +278,12 @@ const ProfileScreen = ({ navigation }) => {
         <View style={styles.actionsSection}>
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={() => navigation.navigate('CaseHistory')}
+            onPress={() => {
+              const parent = navigation.getParent();
+              if (parent) {
+                parent.navigate('CaseHistory');
+              }
+            }}
           >
             <Text style={styles.actionIcon}>📋</Text>
             <Text style={styles.actionText}>View Case History</Text>

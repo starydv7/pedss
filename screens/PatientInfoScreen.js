@@ -61,14 +61,19 @@ const PatientInfoScreen = ({ navigation }) => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate('Profile')}
         >
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Patient Information</Text>
         <TouchableOpacity
           style={styles.menuButton}
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => {
+            const parent = navigation.getParent();
+            if (parent) {
+              parent.navigate('Home');
+            }
+          }}
         >
           <Text style={styles.menuButtonText}>☰</Text>
         </TouchableOpacity>

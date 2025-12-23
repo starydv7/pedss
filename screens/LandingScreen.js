@@ -54,7 +54,7 @@ const LandingScreen = ({ navigation }) => {
         <View style={styles.buttonSection}>
           <TouchableOpacity
             style={styles.primaryButton}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('MainTabs', { screen: 'PatientInfo' })}
           >
             <Text style={styles.primaryButtonText}>🚀 Get Started</Text>
           </TouchableOpacity>
