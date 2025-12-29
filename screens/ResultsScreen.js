@@ -58,13 +58,11 @@ const ResultsScreen = ({ navigation, route }) => {
 
   const getRiskDescription = (score) => {
     if (score >= 4) {
-      return 'High mortality risk. Immediate intensive care recommended.';
+      return ''; // No description for High Risk
     } else if (score >= 3) {
       return 'Poor outcome likely. Close monitoring and aggressive treatment advised.';
-    } else if (score >= 1) {
-      return 'Moderate risk. Standard care with regular assessment.';
     } else {
-      return 'Low risk. Routine care and monitoring.';
+      return 'Standard care with regular assessment.';
     }
   };
 
@@ -187,13 +185,24 @@ const ResultsScreen = ({ navigation, route }) => {
         }]}>
           <View style={styles.riskHeader}>
             <Text style={styles.riskIcon}>{getRiskIcon(results.riskLevel)}</Text>
-            <Text style={[styles.riskTitle, { color: getRiskColor(results.riskLevel) }]} numberOfLines={2}>
-              {results.riskLevel.toUpperCase()} {results.riskLevel === 'High' ? 'MORTALITY RISK' : 'RISK'}
-            </Text>
+            {results.riskLevel === 'Medium' ? (
+              // For Medium Risk: Show description as title, no "MEDIUM RISK" text
+              <Text style={[styles.riskTitle, { color: getRiskColor(results.riskLevel) }]} numberOfLines={3}>
+                {getRiskDescription(results.score)}
+              </Text>
+            ) : (
+              // For Low and High Risk: Show normal title
+              <Text style={[styles.riskTitle, { color: getRiskColor(results.riskLevel) }]} numberOfLines={2}>
+                {results.riskLevel.toUpperCase()} {results.riskLevel === 'High' ? 'MORTALITY RISK' : 'RISK'}
+              </Text>
+            )}
           </View>
-          <Text style={styles.riskDescription} numberOfLines={3}>
-            {getRiskDescription(results.score)}
-          </Text>
+          {/* Only show description for Low Risk, not for Medium (already shown as title) or High (no description) */}
+          {results.riskLevel === 'Low' && (
+            <Text style={styles.riskDescription} numberOfLines={2}>
+              {getRiskDescription(results.score)}
+            </Text>
+          )}
         </View>
 
         {/* Parameter Breakdown */}
