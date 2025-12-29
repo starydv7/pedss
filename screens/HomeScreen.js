@@ -8,31 +8,52 @@ import {
   ScrollView,
 } from 'react-native';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, route }) => {
+
   const features = [
     {
       icon: '📝',
       title: 'Patient Information',
       description: 'Enter basic patient demographics and case details',
-      action: () => navigation.navigate('MainTabs', { screen: 'PatientInfo' }),
+      action: () => {
+        const tabNavigator = navigation.getParent();
+        if (tabNavigator) {
+          tabNavigator.navigate('PatientInfo', { reset: true });
+        }
+      },
     },
     {
       icon: '⚙️',
       title: 'Clinical Assessment',
       description: 'Input PEDSS parameters for outcome prediction',
-      action: () => navigation.navigate('MainTabs', { screen: 'Assessment' }),
+      action: () => {
+        const tabNavigator = navigation.getParent();
+        if (tabNavigator) {
+          tabNavigator.navigate('Assessment');
+        }
+      },
     },
     {
       icon: '📊',
       title: 'Results & Analysis',
       description: 'View risk assessment and clinical interpretation',
-      action: () => navigation.navigate('MainTabs', { screen: 'Results' }),
+      action: () => {
+        const tabNavigator = navigation.getParent();
+        if (tabNavigator) {
+          tabNavigator.navigate('Results');
+        }
+      },
     },
     {
       icon: '📚',
       title: 'Case History',
       description: 'Review previous assessments and outcomes',
-      action: () => navigation.navigate('CaseHistory'),
+      action: () => {
+        const parent = navigation.getParent()?.getParent();
+        if (parent) {
+          parent.navigate('CaseHistory');
+        }
+      },
     },
   ];
 
@@ -47,7 +68,12 @@ const HomeScreen = ({ navigation }) => {
         </View>
         <TouchableOpacity
           style={styles.profileButton}
-          onPress={() => navigation.navigate('MainTabs', { screen: 'Profile' })}
+          onPress={() => {
+            const tabNavigator = navigation.getParent();
+            if (tabNavigator) {
+              tabNavigator.navigate('Profile');
+            }
+          }}
         >
           <Text style={styles.profileIcon}>👤</Text>
         </TouchableOpacity>

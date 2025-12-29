@@ -36,6 +36,15 @@ const ProfileScreen = ({ navigation }) => {
     loadStatistics();
   }, []);
 
+  // Reload statistics when screen is focused (user navigates to this tab)
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadStatistics();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   const loadProfile = async () => {
     try {
       const savedProfile = await StorageService.getProfile();

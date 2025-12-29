@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,23 @@ import {
   Alert,
 } from 'react-native';
 
-const PatientInfoScreen = ({ navigation }) => {
+const PatientInfoScreen = ({ navigation, route }) => {
   const [patientName, setPatientName] = useState('');
   const [patientAge, setPatientAge] = useState('');
   const [selectedGender, setSelectedGender] = useState('');
   const [assessmentDate, setAssessmentDate] = useState(new Date().toLocaleDateString());
+
+  // Reset form when navigating with reset flag
+  useEffect(() => {
+    if (route?.params?.reset) {
+      setPatientName('');
+      setPatientAge('');
+      setSelectedGender('');
+      setAssessmentDate(new Date().toLocaleDateString());
+      // Clear the reset flag
+      navigation.setParams({ reset: undefined });
+    }
+  }, [route?.params?.reset, navigation]);
 
   const validateAndProceed = () => {
     // Validate patient name
@@ -67,15 +79,15 @@ const PatientInfoScreen = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Patient Information</Text>
         <TouchableOpacity
-          style={styles.menuButton}
+          style={styles.newPatientButton}
           onPress={() => {
-            const parent = navigation.getParent();
-            if (parent) {
-              parent.navigate('Home');
-            }
+            setPatientName('');
+            setPatientAge('');
+            setSelectedGender('');
+            setAssessmentDate(new Date().toLocaleDateString());
           }}
         >
-          <Text style={styles.menuButtonText}>☰</Text>
+          <Text style={styles.newPatientButtonText}>🆕 New</Text>
         </TouchableOpacity>
       </View>
 
@@ -261,16 +273,18 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
   },
-  menuButton: {
-    paddingVertical: 8,
+  newPatientButton: {
+    paddingVertical: 6,
     paddingHorizontal: 12,
-    minWidth: 40,
-    alignItems: 'flex-end',
+    backgroundColor: '#2563EB',
+    borderRadius: 8,
+    minWidth: 60,
+    alignItems: 'center',
   },
-  menuButtonText: {
-    color: '#2563EB',
-    fontSize: 24,
-    fontWeight: 'bold',
+  newPatientButtonText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '600',
   },
   progressBarContainer: {
     paddingHorizontal: 20,

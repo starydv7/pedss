@@ -149,10 +149,8 @@ const ResultsScreen = ({ navigation, route }) => {
   };
 
   const handleNewAssessment = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'PatientInfo' }],
-    });
+    // Navigate to PatientInfo tab and reset the form
+    navigation.navigate('PatientInfo', { reset: true });
   };
 
   return (

@@ -42,30 +42,13 @@ const LandingScreen = ({ navigation }) => {
           </Text>
         </View>
 
-        {/* Features Section */}
-        <View style={styles.featuresSection}>
-          <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>📊</Text>
-            <Text style={styles.featureText}>Risk Prediction</Text>
-          </View>
-        </View>
-
         {/* Action Buttons */}
         <View style={styles.buttonSection}>
           <TouchableOpacity
             style={styles.primaryButton}
             onPress={() => navigation.navigate('MainTabs', { screen: 'PatientInfo' })}
           >
-            <Text style={styles.primaryButtonText}>🚀 Get Started</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={() => {
-              alert('Tutorial coming soon!');
-            }}
-          >
-            <Text style={styles.secondaryButtonText}>📖 Learn More</Text>
+            <Text style={styles.primaryButtonText}>Get Started</Text>
           </TouchableOpacity>
         </View>
 
@@ -165,26 +148,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
   },
-  featuresSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: 40,
-  },
-  featureItem: {
-    alignItems: 'center',
-  },
-  featureIcon: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  featureText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
   buttonSection: {
-    gap: 16,
+    alignItems: 'center',
   },
   primaryButton: {
     backgroundColor: 'white',
@@ -205,20 +170,6 @@ const styles = StyleSheet.create({
     color: '#2563EB',
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  secondaryButton: {
-    backgroundColor: 'transparent',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 25,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-  },
-  secondaryButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
   },
   footer: {
     alignItems: 'center',

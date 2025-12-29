@@ -164,20 +164,20 @@ class StorageService {
    */
   async getStatistics() {
     try {
+      // Use the separate count storage for faster and more accurate counts
+      const counts = await this.getAssessmentCounts();
+      
+      // Calculate average score from all assessments (needed for avgScore)
       const assessments = await this.getAllAssessments();
-      const total = assessments.length;
-      const highRisk = assessments.filter(a => a.riskLevel === 'High').length;
-      const mediumRisk = assessments.filter(a => a.riskLevel === 'Medium').length;
-      const lowRisk = assessments.filter(a => a.riskLevel === 'Low').length;
-      const avgScore = total > 0 
-        ? assessments.reduce((sum, a) => sum + (a.score || 0), 0) / total 
+      const avgScore = counts.total > 0 
+        ? assessments.reduce((sum, a) => sum + (a.score || 0), 0) / counts.total 
         : 0;
 
       return {
-        total,
-        highRisk,
-        mediumRisk,
-        lowRisk,
+        total: counts.total || 0,
+        highRisk: counts.highRisk || 0,
+        mediumRisk: counts.mediumRisk || 0,
+        lowRisk: counts.lowRisk || 0,
         avgScore: Math.round(avgScore * 10) / 10,
       };
     } catch (error) {

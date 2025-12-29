@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet } from 'react-native';
 
 // Import screens
+import HomeScreen from '../screens/HomeScreen';
 import PatientInfoScreen from '../screens/PatientInfoScreen';
 import AssessmentScreen from '../screens/AssessmentScreen';
 import ResultsScreen from '../screens/ResultsScreen';
@@ -35,6 +36,21 @@ export default function BottomTabNavigator() {
         tabBarHideOnKeyboard: true,
       }}
     >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="🏠" label="Home" focused={focused} />
+          ),
+        }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            // Reset PatientInfo form when Home is pressed
+            navigation.navigate('PatientInfo', { reset: true });
+          },
+        })}
+      />
       <Tab.Screen
         name="PatientInfo"
         component={PatientInfoScreen}
