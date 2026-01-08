@@ -91,9 +91,9 @@ const AssessmentScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Fixed Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Clinical Assessment</Text>
-      </View>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Clinical Assessment</Text>
+        </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
 

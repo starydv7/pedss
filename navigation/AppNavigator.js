@@ -8,6 +8,7 @@ import LandingScreen from '../screens/LandingScreen';
 import HomeScreen from '../screens/HomeScreen';
 import CaseHistoryScreen from '../screens/CaseHistoryScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import ContributorsScreen from '../screens/ContributorsScreen';
 
 // Import bottom tab navigator
 import BottomTabNavigator from './BottomTabNavigator';
@@ -26,6 +27,7 @@ export const ROUTES = {
   CASE_DETAIL: 'CaseDetail',
   SETTINGS: 'Settings',
   PROFILE: 'Profile',
+  CONTRIBUTORS: 'Contributors',
 };
 
 export default function AppNavigator() {
@@ -91,6 +93,10 @@ export default function AppNavigator() {
         <Stack.Screen 
           name={ROUTES.SETTINGS} 
           component={SettingsScreen}
+        />
+        <Stack.Screen 
+          name={ROUTES.CONTRIBUTORS} 
+          component={ContributorsScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

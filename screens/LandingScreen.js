@@ -52,11 +52,12 @@ const LandingScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {/* Contributors Link */}
+        {/* Contributors Button */}
         <TouchableOpacity
-          onPress={() => alert('Contributors:\n\nAIIMS, New Delhi\nIIIT Delhi\n\nVersion 1.0 | 2024')}
+          style={styles.contributorsButton}
+          onPress={() => navigation.navigate('Contributors')}
         >
-          <Text style={styles.contributorsLink}>👥 Contributors</Text>
+          <Text style={styles.contributorsButtonText}>👥 Contributors</Text>
         </TouchableOpacity>
 
         {/* Footer */}
@@ -185,13 +186,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
-  contributorsLink: {
-    color: 'rgba(255, 255, 255, 0.7)',
-    fontSize: 14,
-    textAlign: 'center',
-    textDecorationLine: 'underline',
+  contributorsButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 25,
+    alignItems: 'center',
     marginTop: 20,
-    fontWeight: '500',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  contributorsButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
