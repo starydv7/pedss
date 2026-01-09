@@ -146,7 +146,7 @@ const SettingsScreen = ({ navigation }) => {
   const handleAbout = () => {
     Alert.alert(
       'About PEDSS App',
-      'Version: 1.0.0\n\nDeveloped by:\nAIIMS, New Delhi\nIIIT Delhi\n\nDeveloper:\nPawan Yadav\n\n© 2025 PEDSS APP. All rights reserved.',
+      'Developed by:\nAIIMS, New Delhi\nIIIT Delhi\n\nDeveloper:\nPawan Yadav\n\n© 2026 PEDSS APP. All rights reserved.',
       [
         { text: 'OK' },
         {
@@ -369,7 +369,7 @@ const SettingsScreen = ({ navigation }) => {
             <SettingItem
               icon="ℹ️"
               title="About PEDSS"
-              subtitle="Version 1.0.0"
+              subtitle="About the app"
               onPress={handleAbout}
             />
             <TouchableOpacity 
@@ -432,7 +432,7 @@ const SettingsScreen = ({ navigation }) => {
           >
             <Text style={styles.appInfoLinkedIn}>LinkedIn Profile</Text>
           </TouchableOpacity>
-          <Text style={styles.appInfoVersion}>© 2025 PEDSS APP. All rights reserved.</Text>
+          <Text style={styles.appInfoVersion}>© 2026 PEDSS APP. All rights reserved.</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

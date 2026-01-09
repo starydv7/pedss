@@ -97,8 +97,14 @@ const CaseHistoryScreen = ({ navigation }) => {
 
   const handleCasePress = (caseItem) => {
     if (caseItem.fullData) {
-      // Navigate to Results screen with saved data
-      navigation.navigate('Results', caseItem.fullData);
+      // Navigate to Results screen with saved data through MainTabs
+      const parent = navigation.getParent();
+      if (parent) {
+        parent.navigate('MainTabs', { 
+          screen: 'Results', 
+          params: caseItem.fullData 
+        });
+      }
     } else {
       Alert.alert(
         'Case Details',
@@ -307,7 +313,15 @@ const CaseHistoryScreen = ({ navigation }) => {
               {!searchQuery && (
                 <TouchableOpacity
                   style={styles.emptyActionButton}
-                  onPress={() => navigation.navigate('PatientInfo')}
+                  onPress={() => {
+                    const parent = navigation.getParent();
+                    if (parent) {
+                      parent.navigate('MainTabs', { 
+                        screen: 'PatientInfo', 
+                        params: { reset: true } 
+                      });
+                    }
+                  }}
                 >
                   <Text style={styles.emptyActionText}>Create New Assessment</Text>
                 </TouchableOpacity>
@@ -320,14 +334,27 @@ const CaseHistoryScreen = ({ navigation }) => {
         <View style={styles.actionSection}>
           <TouchableOpacity
             style={styles.primaryAction}
-            onPress={() => navigation.navigate('PatientInfo')}
+            onPress={() => {
+              const parent = navigation.getParent();
+              if (parent) {
+                parent.navigate('MainTabs', { 
+                  screen: 'PatientInfo', 
+                  params: { reset: true } 
+                });
+              }
+            }}
           >
             <Text style={styles.primaryActionText}>📝 New Assessment</Text>
           </TouchableOpacity>
           
           <TouchableOpacity
             style={styles.secondaryAction}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => {
+              const parent = navigation.getParent();
+              if (parent) {
+                parent.navigate('MainTabs', { screen: 'Home' });
+              }
+            }}
           >
             <Text style={styles.secondaryActionText}>🏠 Home</Text>
           </TouchableOpacity>

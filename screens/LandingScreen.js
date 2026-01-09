@@ -28,12 +28,10 @@ const LandingScreen = ({ navigation }) => {
         <View style={styles.collaborationSection}>
           <View style={styles.institutionRow}>
             <View style={styles.institutionBadge}>
-              <Text style={styles.institutionEmoji}>🏛️</Text>
               <Text style={styles.institutionText}>AIIMS, New Delhi</Text>
             </View>
             <Text style={styles.collaborationSymbol}>×</Text>
             <View style={styles.institutionBadge}>
-              <Text style={styles.institutionEmoji}>🔬</Text>
               <Text style={styles.institutionText}>IIITD</Text>
             </View>
           </View>
@@ -57,12 +55,12 @@ const LandingScreen = ({ navigation }) => {
           style={styles.contributorsButton}
           onPress={() => navigation.navigate('Contributors')}
         >
-          <Text style={styles.contributorsButtonText}>👥 Contributors</Text>
+          <Text style={styles.contributorsButtonText}>Contributors</Text>
         </TouchableOpacity>
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Version 1.0 | AIIMS-IIITD 2024</Text>
+          <Text style={styles.footerText}>AIIMS-IIITD 2026</Text>
           <Text style={styles.footerSubtext}>
             Medical-grade outcome prediction for pediatric seizures
           </Text>

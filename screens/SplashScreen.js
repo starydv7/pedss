@@ -58,10 +58,7 @@ const SplashScreen = ({ navigation }) => {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Version 1.0 | AIIMS-IIITD 2024</Text>
-          <Text style={styles.footerSubtext}>
-            Medical-grade outcome prediction for pediatric seizures
-          </Text>
+          <Text style={styles.footerText}>(AIIMS-IIITD 2026)</Text>
         </View>
       </View>
     </SafeAreaView>

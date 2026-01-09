@@ -46,7 +46,6 @@ const ContributorsScreen = ({ navigation }) => {
         {/* AIIMS Section */}
         <View style={styles.section}>
           <View style={styles.institutionHeader}>
-            <Text style={styles.institutionEmoji}>🏛️</Text>
             <Text style={styles.institutionTitle}>AIIMS, New Delhi</Text>
           </View>
           
@@ -63,7 +62,6 @@ const ContributorsScreen = ({ navigation }) => {
         {/* IIITD Section - Placeholder for future */}
         <View style={styles.section}>
           <View style={styles.institutionHeader}>
-            <Text style={styles.institutionEmoji}>🔬</Text>
             <Text style={styles.institutionTitle}>IIIT Delhi</Text>
           </View>
           
