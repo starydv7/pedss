@@ -18,24 +18,59 @@ const LandingScreen = ({ navigation }) => {
         {/* Logo Section */}
         <View style={styles.logoSection}>
           <View style={styles.hospitalIcon}>
-            <Text style={styles.hospitalEmoji}>🏥</Text>
+            <View style={styles.logoCircle}>
+              <Image 
+                source={require('../assets/PEDSS_icon_512x512.png')} 
+                style={styles.pedssIcon}
+                resizeMode="contain"
+              />
+            </View>
           </View>
-          <Text style={styles.appTitle}>PEDSS</Text>
-          <Text style={styles.appSubtitle}>Outcome Prediction Tool</Text>
+          <Text 
+            style={styles.appTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.7}
+          >
+            PEDSS
+          </Text>
+          <Text 
+            style={styles.appSubtitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Outcome Prediction Tool
+          </Text>
         </View>
 
         {/* Collaboration Section */}
         <View style={styles.collaborationSection}>
-          <View style={styles.institutionRow}>
-            <View style={styles.institutionBadge}>
-              <Text style={styles.institutionText}>AIIMS, New Delhi</Text>
-            </View>
-            <Text style={styles.collaborationSymbol}>×</Text>
-            <View style={styles.institutionBadge}>
-              <Text style={styles.institutionText}>IIITD</Text>
-            </View>
+          <View style={styles.institutionContainer}>
+            <Text 
+              style={styles.institutionText}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.85}
+            >
+              AIIMS, New Delhi
+            </Text>
+            <Text style={styles.collaborationAnd}>and</Text>
+            <Text 
+              style={styles.institutionText}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.85}
+            >
+              IIIT Delhi
+            </Text>
           </View>
-          <Text style={styles.collaborationText}>
+          <Text 
+            style={styles.collaborationText}
+            numberOfLines={2}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.85}
+          >
             Pediatric Convulsive Status Epilepticus{'\n'}Prediction Score
           </Text>
         </View>
@@ -46,22 +81,48 @@ const LandingScreen = ({ navigation }) => {
             style={styles.primaryButton}
             onPress={() => navigation.navigate('MainTabs', { screen: 'PatientInfo' })}
           >
-            <Text style={styles.primaryButtonText}>Get Started</Text>
+            <Text 
+              style={styles.primaryButtonText}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              Get Started
+            </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Contributors Button */}
+        {/* Contributors Link */}
         <TouchableOpacity
-          style={styles.contributorsButton}
           onPress={() => navigation.navigate('Contributors')}
+          style={styles.contributorsLinkContainer}
         >
-          <Text style={styles.contributorsButtonText}>Contributors</Text>
+          <Text 
+            style={styles.contributorsLinkText}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Contributors
+          </Text>
         </TouchableOpacity>
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>AIIMS-IIITD 2026</Text>
-          <Text style={styles.footerSubtext}>
+          <Text 
+            style={styles.footerText}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            AIIMS-IIITD 2026
+          </Text>
+          <Text 
+            style={styles.footerSubtext}
+            numberOfLines={2}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.75}
+          >
             Medical-grade outcome prediction for pediatric seizures
           </Text>
         </View>
@@ -93,9 +154,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 24,
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  hospitalEmoji: {
-    fontSize: 60,
+  logoCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  pedssIcon: {
+    width: 90,
+    height: 90,
   },
   appTitle: {
     fontSize: 48,
@@ -109,43 +182,34 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
     fontWeight: '500',
+    maxWidth: '100%',
   },
   collaborationSection: {
     alignItems: 'center',
   },
-  institutionRow: {
-    flexDirection: 'row',
+  institutionContainer: {
     alignItems: 'center',
     marginBottom: 16,
-  },
-  institutionBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  institutionEmoji: {
-    fontSize: 20,
-    marginRight: 8,
   },
   institutionText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+    marginVertical: 4,
   },
-  collaborationSymbol: {
-    fontSize: 24,
-    color: 'white',
-    marginHorizontal: 16,
-    fontWeight: 'bold',
+  collaborationAnd: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginVertical: 4,
+    fontWeight: '400',
   },
   collaborationText: {
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
     lineHeight: 24,
+    maxWidth: '100%',
+    marginTop: 8,
   },
   buttonSection: {
     alignItems: 'center',
@@ -178,26 +242,25 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 14,
     marginBottom: 4,
+    maxWidth: '100%',
   },
   footerSubtext: {
     color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 12,
     textAlign: 'center',
+    maxWidth: '100%',
   },
-  contributorsButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 25,
+  contributorsLinkContainer: {
     alignItems: 'center',
     marginTop: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  contributorsButtonText: {
+  contributorsLinkText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
+    textDecorationLine: 'underline',
+    textDecorationColor: 'white',
+    maxWidth: '100%',
   },
 });
 

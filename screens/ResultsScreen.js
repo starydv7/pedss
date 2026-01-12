@@ -47,14 +47,6 @@ const ResultsScreen = ({ navigation, route }) => {
     }
   };
 
-  const getRiskIcon = (level) => {
-    switch (level) {
-      case 'Low': return '🟢';
-      case 'Medium': return '🟡';
-      case 'High': return '🔴';
-      default: return '⚪';
-    }
-  };
 
   const getRiskDescription = (score) => {
     if (score >= 4) {
@@ -76,17 +68,7 @@ const ResultsScreen = ({ navigation, route }) => {
     try {
       await StorageService.saveAssessment(results);
       setIsSaved(true);
-      Alert.alert('Success', 'Assessment saved successfully!', [
-        { 
-          text: 'OK', 
-          onPress: () => {
-            const parent = navigation.getParent();
-            if (parent) {
-              parent.navigate('CaseHistory');
-            }
-          }
-        }
-      ]);
+      Alert.alert('Success', 'Assessment saved successfully!');
     } catch (error) {
       Alert.alert('Error', 'Failed to save assessment. Please try again.');
       console.error('Save error:', error);
@@ -147,22 +129,61 @@ const ResultsScreen = ({ navigation, route }) => {
   };
 
   const handleNewAssessment = () => {
-    // Navigate to PatientInfo tab and reset the form
-    navigation.navigate('PatientInfo', { reset: true });
+    Alert.alert(
+      'New Case Assessment',
+      'This will reset all patient information and assessment parameters. Continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: () => {
+            // Get parent navigator (Tab Navigator)
+            const parent = navigation.getParent();
+            if (parent) {
+              // Navigate to PatientInfo tab with reset flag
+              parent.navigate('PatientInfo', { reset: true });
+              // Also navigate to Assessment tab with reset flag to reset parameters
+              // Use a delay to ensure PatientInfo navigation completes first
+              setTimeout(() => {
+                parent.navigate('Assessment', { reset: true });
+              }, 200);
+            } else {
+              // Fallback if parent navigator not available
+              navigation.navigate('PatientInfo', { reset: true });
+            }
+          }
+        }
+      ]
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Fixed Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Assessment Results</Text>
+        <Text 
+          style={styles.headerTitle}
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          minimumFontScale={0.8}
+        >
+          Assessment Results
+        </Text>
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
 
         {/* Patient Summary */}
         <View style={styles.patientSummary}>
-          <Text style={styles.summaryTitle}>Patient Summary</Text>
+          <Text 
+            style={styles.summaryTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Patient Summary
+          </Text>
           <Text style={styles.summaryText}>
             {results.patientData.name} | {results.patientData.age} | {results.patientData.gender}
           </Text>
@@ -171,7 +192,14 @@ const ResultsScreen = ({ navigation, route }) => {
 
         {/* Main Score Display */}
         <View style={styles.scoreContainer}>
-          <Text style={styles.scoreLabel}>🎯 PEDSS Score</Text>
+          <Text 
+            style={styles.scoreLabel}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            PEDSS Score
+          </Text>
           <Text style={styles.scoreValue}>{results.score}/6</Text>
           <View style={styles.scoreProgressBar}>
             <View style={[styles.scoreProgressFill, { width: `${(results.score / 6) * 100}%` }]} />
@@ -184,7 +212,6 @@ const ResultsScreen = ({ navigation, route }) => {
           backgroundColor: results.riskLevel === 'Medium' ? '#FEF3C7' : results.riskLevel === 'High' ? '#FEE2E2' : '#D1FAE5'
         }]}>
           <View style={styles.riskHeader}>
-            <Text style={styles.riskIcon}>{getRiskIcon(results.riskLevel)}</Text>
             {results.riskLevel === 'Medium' ? (
               // For Medium Risk: Show description as title, no "MEDIUM RISK" text
               <Text style={[styles.riskTitle, { color: getRiskColor(results.riskLevel) }]} numberOfLines={3}>
@@ -207,37 +234,79 @@ const ResultsScreen = ({ navigation, route }) => {
 
         {/* Parameter Breakdown */}
         <View style={styles.breakdownCard}>
-          <Text style={styles.breakdownTitle}>📋 Parameter Breakdown</Text>
+          <Text 
+            style={styles.breakdownTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Parameter Breakdown
+          </Text>
           <View style={styles.breakdownItem}>
-            <Text style={styles.breakdownLabel}>P (PCPCS)</Text>
+            <Text 
+              style={styles.breakdownLabel}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              P (PCPCS)
+            </Text>
             <View style={styles.breakdownBar}>
               <View style={[styles.breakdownFill, { width: `${(results.parameters.P / 1) * 100}%` }]} />
             </View>
             <Text style={styles.breakdownValue}>{results.parameters.P}/1</Text>
           </View>
           <View style={styles.breakdownItem}>
-            <Text style={styles.breakdownLabel}>E (EEG)</Text>
+            <Text 
+              style={styles.breakdownLabel}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              E (EEG)
+            </Text>
             <View style={styles.breakdownBar}>
               <View style={[styles.breakdownFill, { width: `${(results.parameters.E / 1) * 100}%` }]} />
             </View>
             <Text style={styles.breakdownValue}>{results.parameters.E}/1</Text>
           </View>
           <View style={styles.breakdownItem}>
-            <Text style={styles.breakdownLabel}>D (Drug)</Text>
+            <Text 
+              style={styles.breakdownLabel}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              D (Drug)
+            </Text>
             <View style={styles.breakdownBar}>
               <View style={[styles.breakdownFill, { width: `${(results.parameters.D / 2) * 100}%` }]} />
             </View>
             <Text style={styles.breakdownValue}>{results.parameters.D}/2</Text>
           </View>
           <View style={styles.breakdownItem}>
-            <Text style={styles.breakdownLabel}>S (Semiology)</Text>
+            <Text 
+              style={styles.breakdownLabel}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              S (Semiology)
+            </Text>
             <View style={styles.breakdownBar}>
               <View style={[styles.breakdownFill, { width: `${(results.parameters.S1 / 1) * 100}%` }]} />
             </View>
             <Text style={styles.breakdownValue}>{results.parameters.S1}/1</Text>
           </View>
           <View style={styles.breakdownItem}>
-            <Text style={styles.breakdownLabel}>S (Sickness)</Text>
+            <Text 
+              style={styles.breakdownLabel}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              S (Sickness)
+            </Text>
             <View style={styles.breakdownBar}>
               <View style={[styles.breakdownFill, { width: `${(results.parameters.S2 / 1) * 100}%` }]} />
             </View>
@@ -247,7 +316,14 @@ const ResultsScreen = ({ navigation, route }) => {
 
         {/* Clinical Interpretation */}
         <View style={styles.interpretationCard}>
-          <Text style={styles.interpretationTitle}>📝 Clinical Interpretation</Text>
+          <Text 
+            style={styles.interpretationTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Clinical Interpretation
+          </Text>
           <Text style={styles.interpretationText}>
             {results.score >= 4 ? (
               'This patient demonstrates high-risk factors including abnormal premorbid status and drug refractoriness. Immediate intensive care unit admission with continuous monitoring is strongly recommended. Consider early intervention strategies and prepare for potential complications.'
@@ -272,8 +348,14 @@ const ResultsScreen = ({ navigation, route }) => {
               <ActivityIndicator size="small" color="#2563EB" />
             ) : (
               <>
-                <Text style={styles.actionButtonIcon}>{isSaved ? '✅' : '💾'}</Text>
-                <Text style={styles.actionButtonText}>{isSaved ? 'Saved' : 'Save'}</Text>
+                <Text 
+                  style={styles.actionButtonText}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit={true}
+                  minimumFontScale={0.8}
+                >
+                  {isSaved ? 'Saved' : 'Save'}
+                </Text>
               </>
             )}
           </TouchableOpacity>
@@ -287,15 +369,27 @@ const ResultsScreen = ({ navigation, route }) => {
               <ActivityIndicator size="small" color="#2563EB" />
             ) : (
               <>
-                <Text style={styles.actionButtonIcon}>📤</Text>
-                <Text style={styles.actionButtonText}>Export</Text>
+                <Text 
+                  style={styles.actionButtonText}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit={true}
+                  minimumFontScale={0.8}
+                >
+                  Export
+                </Text>
               </>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionButton} onPress={handleNewAssessment}>
-            <Text style={styles.actionButtonIcon}>🔄</Text>
-            <Text style={styles.actionButtonText}>New Case</Text>
+            <Text 
+              style={styles.actionButtonText}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              New Case
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -312,14 +406,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     zIndex: 1000,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#1E293B',
     textAlign: 'center',
@@ -403,10 +501,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
-  },
-  riskIcon: {
-    fontSize: 24,
-    marginRight: 12,
   },
   riskTitle: {
     fontSize: 18,
@@ -512,10 +606,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
-  },
-  actionButtonIcon: {
-    fontSize: 20,
-    marginBottom: 4,
   },
   actionButtonText: {
     fontSize: 14,

@@ -81,14 +81,6 @@ const CaseHistoryScreen = ({ navigation }) => {
     }
   };
 
-  const getRiskIcon = (level) => {
-    switch (level) {
-      case 'Low': return '🟢';
-      case 'Medium': return '🟡';
-      case 'High': return '🔴';
-      default: return '⚪';
-    }
-  };
 
   const filteredCases = caseHistory.filter(caseItem =>
     caseItem.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -195,9 +187,16 @@ const CaseHistoryScreen = ({ navigation }) => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Case History</Text>
+        <Text 
+          style={styles.headerTitle}
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          minimumFontScale={0.8}
+        >
+          Case History
+        </Text>
         <TouchableOpacity
           style={styles.headerActionButton}
           onPress={handleExportHistory}
@@ -206,7 +205,14 @@ const CaseHistoryScreen = ({ navigation }) => {
           {exporting ? (
             <ActivityIndicator size="small" color="#2563EB" />
           ) : (
-            <Text style={styles.headerActionButtonText}>📤</Text>
+            <Text 
+              style={styles.headerActionButtonText}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              Export
+            </Text>
           )}
         </TouchableOpacity>
       </View>
@@ -222,7 +228,6 @@ const CaseHistoryScreen = ({ navigation }) => {
         {/* Search Section */}
         <View style={styles.searchSection}>
           <View style={styles.searchContainer}>
-            <Text style={styles.searchIcon}>🔍</Text>
             <TextInput
               style={styles.searchInput}
               placeholder="Search by name or ID..."
@@ -235,19 +240,47 @@ const CaseHistoryScreen = ({ navigation }) => {
 
         {/* Statistics */}
         <View style={styles.statsSection}>
-          <Text style={styles.statsTitle}>Statistics</Text>
+          <Text 
+            style={styles.statsTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Statistics
+          </Text>
           <View style={styles.statsGrid}>
             <View style={styles.statCard}>
               <Text style={styles.statNumber}>{statistics.total}</Text>
-              <Text style={styles.statLabel}>Total Cases</Text>
+              <Text 
+                style={styles.statLabel}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
+                Total Cases
+              </Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statNumber}>{statistics.highRisk}</Text>
-              <Text style={styles.statLabel}>High Risk</Text>
+              <Text 
+                style={styles.statLabel}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
+                High Risk
+              </Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statNumber}>{statistics.avgScore}</Text>
-              <Text style={styles.statLabel}>Avg Score</Text>
+              <Text 
+                style={styles.statLabel}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
+                Avg Score
+              </Text>
             </View>
           </View>
         </View>
@@ -255,9 +288,23 @@ const CaseHistoryScreen = ({ navigation }) => {
         {/* Case List */}
         <View style={styles.casesSection}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recent Cases</Text>
+            <Text 
+              style={styles.sectionTitle}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              Recent Cases
+            </Text>
             <TouchableOpacity onPress={handleClearHistory}>
-              <Text style={styles.clearButton}>Clear All</Text>
+              <Text 
+                style={styles.clearButton}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
+                Clear All
+              </Text>
             </TouchableOpacity>
           </View>
           
@@ -270,20 +317,45 @@ const CaseHistoryScreen = ({ navigation }) => {
             >
               <View style={styles.caseHeader}>
                 <View style={styles.caseInfo}>
-                  <Text style={styles.patientName}>{caseItem.patientName}</Text>
-                  <Text style={styles.patientDetails}>
+                  <Text 
+                    style={styles.patientName}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit={true}
+                    minimumFontScale={0.8}
+                  >
+                    {caseItem.patientName}
+                  </Text>
+                  <Text 
+                    style={styles.patientDetails}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit={true}
+                    minimumFontScale={0.8}
+                  >
                     ID: {caseItem.id} • {caseItem.age} • {caseItem.gender}
                   </Text>
                 </View>
                 <View style={[styles.riskBadge, { backgroundColor: getRiskColor(caseItem.riskLevel) }]}>
-                  <Text style={styles.riskIcon}>{getRiskIcon(caseItem.riskLevel)}</Text>
-                  <Text style={styles.riskText}>{caseItem.riskLevel}</Text>
+                  <Text 
+                    style={styles.riskText}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit={true}
+                    minimumFontScale={0.8}
+                  >
+                    {caseItem.riskLevel}
+                  </Text>
                 </View>
               </View>
               
               <View style={styles.caseDetails}>
                 <View style={styles.scoreContainer}>
-                  <Text style={styles.scoreLabel}>PEDSS Score</Text>
+                  <Text 
+                    style={styles.scoreLabel}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit={true}
+                    minimumFontScale={0.8}
+                  >
+                    PEDSS Score
+                  </Text>
                   <Text style={styles.scoreValue}>{caseItem.score}/6</Text>
                 </View>
                 <View style={styles.dateContainer}>
@@ -301,8 +373,12 @@ const CaseHistoryScreen = ({ navigation }) => {
           
           {filteredCases.length === 0 && (
             <View style={styles.emptyState}>
-              <Text style={styles.emptyIcon}>📋</Text>
-              <Text style={styles.emptyTitle}>
+              <Text 
+                style={styles.emptyTitle}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
                 {searchQuery ? 'No Cases Found' : 'No Case History'}
               </Text>
               <Text style={styles.emptyText}>
@@ -323,7 +399,14 @@ const CaseHistoryScreen = ({ navigation }) => {
                     }
                   }}
                 >
-                  <Text style={styles.emptyActionText}>Create New Assessment</Text>
+                  <Text 
+                    style={styles.emptyActionText}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit={true}
+                    minimumFontScale={0.8}
+                  >
+                    Create New Assessment
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -344,7 +427,7 @@ const CaseHistoryScreen = ({ navigation }) => {
               }
             }}
           >
-            <Text style={styles.primaryActionText}>📝 New Assessment</Text>
+            <Text style={styles.primaryActionText}>New Assessment</Text>
           </TouchableOpacity>
           
           <TouchableOpacity
@@ -356,7 +439,7 @@ const CaseHistoryScreen = ({ navigation }) => {
               }
             }}
           >
-            <Text style={styles.secondaryActionText}>🏠 Home</Text>
+            <Text style={styles.secondaryActionText}>Home</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -395,13 +478,15 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: '#2563EB',
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: '600',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1E293B',
+    flex: 1,
+    textAlign: 'center',
   },
   actionButton: {
     paddingVertical: 8,
@@ -428,11 +513,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
-  searchIcon: {
-    fontSize: 20,
-    marginRight: 12,
-    color: '#6B7280',
   },
   searchInput: {
     flex: 1,
@@ -539,10 +619,6 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 20,
   },
-  riskIcon: {
-    fontSize: 16,
-    marginRight: 6,
-  },
   riskText: {
     color: 'white',
     fontSize: 12,
@@ -596,10 +672,6 @@ const styles = StyleSheet.create({
   emptyState: {
     alignItems: 'center',
     paddingVertical: 40,
-  },
-  emptyIcon: {
-    fontSize: 48,
-    marginBottom: 16,
   },
   emptyTitle: {
     fontSize: 18,

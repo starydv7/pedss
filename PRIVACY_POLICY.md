@@ -159,7 +159,7 @@ For questions about this Privacy Policy or data handling:
 - AIIMS, New Delhi
 - IIIT Delhi
 
-**Support Email:** support@pedss.aiims.edu (if applicable)
+**Support Email:** aiimsiiitd@gmail.com
 
 **App Version:** 1.0.0
 

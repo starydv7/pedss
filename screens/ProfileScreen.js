@@ -10,6 +10,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import StorageService from '../services/StorageService';
 
 const ProfileScreen = ({ navigation }) => {
@@ -37,13 +38,11 @@ const ProfileScreen = ({ navigation }) => {
   }, []);
 
   // Reload statistics when screen is focused (user navigates to this tab)
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+  useFocusEffect(
+    React.useCallback(() => {
       loadStatistics();
-    });
-
-    return unsubscribe;
-  }, [navigation]);
+    }, [])
+  );
 
   const loadProfile = async () => {
     try {
@@ -123,9 +122,16 @@ const ProfileScreen = ({ navigation }) => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Profile</Text>
+        <Text 
+          style={styles.headerTitle}
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          minimumFontScale={0.8}
+        >
+          Profile
+        </Text>
         <TouchableOpacity
           style={styles.settingsButton}
           onPress={() => {
@@ -135,7 +141,14 @@ const ProfileScreen = ({ navigation }) => {
             }
           }}
         >
-          <Text style={styles.settingsButtonText}>⚙️</Text>
+          <Text 
+            style={styles.settingsButtonText}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Settings
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -154,16 +167,31 @@ const ProfileScreen = ({ navigation }) => {
               </Text>
             </View>
           </View>
-          <Text style={styles.profileName}>
-            {isEditing ? tempData.name || 'Enter Your Name' : profileData.name || 'Enter Your Name'}
+          <Text 
+            style={styles.profileName}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            {isEditing ? tempData.name || 'Name' : profileData.name || 'Name'}
           </Text>
           {profileData.title ? (
-            <Text style={styles.profileTitle}>
+            <Text 
+              style={styles.profileTitle}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
               {isEditing ? tempData.title : profileData.title}
             </Text>
           ) : null}
           {profileData.hospital ? (
-            <Text style={styles.profileHospital}>
+            <Text 
+              style={styles.profileHospital}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
               {isEditing ? tempData.hospital : profileData.hospital}
             </Text>
           ) : null}
@@ -171,12 +199,33 @@ const ProfileScreen = ({ navigation }) => {
 
         {/* Statistics */}
         <View style={styles.statsSection}>
-          <Text style={styles.sectionTitle}>Your Statistics</Text>
+          <Text 
+            style={styles.sectionTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Your Statistics
+          </Text>
           <View style={styles.statsGrid}>
             {statsData.map((stat, index) => (
               <View key={index} style={styles.statCard}>
-                <Text style={styles.statValue}>{stat.value}</Text>
-                <Text style={styles.statLabel}>{stat.label}</Text>
+                <Text 
+                  style={styles.statValue}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit={true}
+                  minimumFontScale={0.8}
+                >
+                  {stat.value}
+                </Text>
+                <Text 
+                  style={styles.statLabel}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit={true}
+                  minimumFontScale={0.8}
+                >
+                  {stat.label}
+                </Text>
               </View>
             ))}
           </View>
@@ -185,18 +234,46 @@ const ProfileScreen = ({ navigation }) => {
         {/* Profile Information */}
         <View style={styles.infoSection}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Profile Information</Text>
+            <Text 
+              style={styles.sectionTitle}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              Profile Information
+            </Text>
             {!isEditing ? (
               <TouchableOpacity onPress={handleEdit}>
-                <Text style={styles.editButton}>Edit</Text>
+                <Text 
+                  style={styles.editButton}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit={true}
+                  minimumFontScale={0.8}
+                >
+                  Edit
+                </Text>
               </TouchableOpacity>
             ) : (
               <View style={styles.editActions}>
                 <TouchableOpacity onPress={handleCancel}>
-                  <Text style={styles.cancelButton}>Cancel</Text>
+                  <Text 
+                    style={styles.cancelButton}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit={true}
+                    minimumFontScale={0.8}
+                  >
+                    Cancel
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleSave}>
-                  <Text style={styles.saveButton}>Save</Text>
+                  <Text 
+                    style={styles.saveButton}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit={true}
+                    minimumFontScale={0.8}
+                  >
+                    Save
+                  </Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -214,7 +291,7 @@ const ProfileScreen = ({ navigation }) => {
                   placeholderTextColor="#9CA3AF"
                 />
               ) : (
-                <Text style={styles.infoValue}>{profileData.name || 'Not set'}</Text>
+                <Text style={styles.infoValue}>{profileData.name || '—'}</Text>
               )}
             </View>
 
@@ -229,7 +306,7 @@ const ProfileScreen = ({ navigation }) => {
                   placeholderTextColor="#9CA3AF"
                 />
               ) : (
-                <Text style={styles.infoValue}>{profileData.title || 'Not set'}</Text>
+                <Text style={styles.infoValue}>{profileData.title || '—'}</Text>
               )}
             </View>
 
@@ -244,7 +321,7 @@ const ProfileScreen = ({ navigation }) => {
                   placeholderTextColor="#9CA3AF"
                 />
               ) : (
-                <Text style={styles.infoValue}>{profileData.hospital || 'Not set'}</Text>
+                <Text style={styles.infoValue}>{profileData.hospital || '—'}</Text>
               )}
             </View>
 
@@ -256,11 +333,11 @@ const ProfileScreen = ({ navigation }) => {
                   value={tempData.email}
                   onChangeText={(text) => handleChangeText('email', text)}
                   keyboardType="email-address"
-                  placeholder="your.email@example.com"
+                  placeholder="Enter email address"
                   placeholderTextColor="#9CA3AF"
                 />
               ) : (
-                <Text style={styles.infoValue}>{profileData.email || 'Not set'}</Text>
+                <Text style={styles.infoValue}>{profileData.email || '—'}</Text>
               )}
             </View>
 
@@ -272,33 +349,17 @@ const ProfileScreen = ({ navigation }) => {
                   value={tempData.phone}
                   onChangeText={(text) => handleChangeText('phone', text)}
                   keyboardType="phone-pad"
-                  placeholder="+91 98765 43210"
+                  placeholder="Enter phone number"
                   placeholderTextColor="#9CA3AF"
                 />
               ) : (
-                <Text style={styles.infoValue}>{profileData.phone || 'Not set'}</Text>
+                <Text style={styles.infoValue}>{profileData.phone || '—'}</Text>
               )}
             </View>
           </View>
         </View>
 
 
-        {/* Quick Actions */}
-        <View style={styles.actionsSection}>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => {
-              const parent = navigation.getParent();
-              if (parent) {
-                parent.navigate('CaseHistory');
-              }
-            }}
-          >
-            <Text style={styles.actionIcon}>📋</Text>
-            <Text style={styles.actionText}>View Case History</Text>
-          </TouchableOpacity>
-
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -329,13 +390,15 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: '#2563EB',
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: '600',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1E293B',
+    flex: 1,
+    textAlign: 'center',
   },
   settingsButton: {
     paddingVertical: 8,
@@ -561,35 +624,6 @@ const styles = StyleSheet.create({
   achievementDescription: {
     fontSize: 14,
     color: '#6B7280',
-  },
-  actionsSection: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    gap: 12,
-  },
-  actionButton: {
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  actionIcon: {
-    fontSize: 20,
-    marginRight: 12,
-  },
-  actionText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
   },
 });
 

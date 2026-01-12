@@ -1,6 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
@@ -12,17 +14,45 @@ import ProfileScreen from '../screens/ProfileScreen';
 const Tab = createBottomTabNavigator();
 
 // Custom tab bar icon component
-const TabIcon = ({ icon, label, focused }) => (
-  <View style={styles.tabIconContainer}>
-    <Text style={[styles.tabIcon, focused && styles.tabIconActive]}>
-      {icon}
-    </Text>
-    <Text style={[styles.tabLabel, focused && styles.tabLabelActive]}>
-      {label}
-    </Text>
-    {focused && <View style={styles.activeIndicator} />}
-  </View>
-);
+const TabIcon = ({ icon, label, focused }) => {
+  // Use shorter labels on small screens (< 360px width)
+  const isSmallScreen = screenWidth < 360;
+  const getShortLabel = (fullLabel) => {
+    if (!isSmallScreen) return fullLabel;
+    const shortLabels = {
+      'Home': 'Home',
+      'Patient': 'Patient',
+      'Assessment': 'Assess',
+      'Results': 'Results',
+      'Profile': 'Profile',
+    };
+    return shortLabels[fullLabel] || fullLabel;
+  };
+
+  const displayLabel = getShortLabel(label);
+  const fontSize = isSmallScreen ? 9 : 11;
+
+  return (
+    <View style={styles.tabIconContainer}>
+      <Text style={[styles.tabIcon, focused && styles.tabIconActive]}>
+        {icon}
+      </Text>
+      <Text 
+        style={[
+          styles.tabLabel, 
+          focused && styles.tabLabelActive,
+          { fontSize }
+        ]}
+        numberOfLines={1}
+        adjustsFontSizeToFit={true}
+        minimumFontScale={0.8}
+      >
+        {displayLabel}
+      </Text>
+      {focused && <View style={styles.activeIndicator} />}
+    </View>
+  );
+};
 
 export default function BottomTabNavigator() {
   return (
@@ -48,6 +78,10 @@ export default function BottomTabNavigator() {
           tabPress: (e) => {
             // Reset PatientInfo form when Home is pressed
             navigation.navigate('PatientInfo', { reset: true });
+            // Also reset Assessment parameters
+            setTimeout(() => {
+              navigation.navigate('Assessment', { reset: true });
+            }, 100);
           },
         })}
       />
@@ -127,6 +161,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#64748B',
     fontWeight: '500',
+    textAlign: 'center',
+    maxWidth: '100%',
   },
   tabLabelActive: {
     color: '#2563EB',

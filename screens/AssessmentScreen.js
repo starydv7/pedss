@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -19,6 +20,38 @@ const AssessmentScreen = ({ navigation, route }) => {
   });
 
   const [currentScore, setCurrentScore] = useState(0);
+
+  // Reset function
+  const resetAssessment = () => {
+    setParameters({
+      P: null,
+      E: null,
+      D: null,
+      S1: null,
+      S2: { shock: false, intubation: false, mods: false },
+    });
+    setCurrentScore(0);
+  };
+
+  // Reset when screen is focused with reset flag (for tab navigation)
+  useFocusEffect(
+    React.useCallback(() => {
+      const resetFlag = route?.params?.reset;
+      if (resetFlag) {
+        resetAssessment();
+        // Clear the reset flag after resetting
+        navigation.setParams({ reset: undefined });
+      }
+    }, [route?.params?.reset, navigation])
+  );
+
+  // Also listen for route params changes (for immediate navigation resets)
+  useEffect(() => {
+    if (route?.params?.reset) {
+      resetAssessment();
+      navigation.setParams({ reset: undefined });
+    }
+  }, [route?.params?.reset]);
 
   const updateParameter = (param, value) => {
     const newParameters = { ...parameters, [param]: value };
@@ -92,26 +125,82 @@ const AssessmentScreen = ({ navigation, route }) => {
     <SafeAreaView style={styles.container}>
       {/* Fixed Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Clinical Assessment</Text>
+          <TouchableOpacity
+            style={styles.resetButton}
+            onPress={() => {
+              Alert.alert(
+                'Reset Assessment',
+                'Are you sure you want to reset all assessment parameters?',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  {
+                    text: 'Reset',
+                    style: 'destructive',
+                    onPress: () => {
+                      resetAssessment();
+                      Alert.alert('Success', 'Assessment parameters have been reset.');
+                    }
+                  }
+                ]
+              );
+            }}
+          >
+            <Text 
+              style={styles.resetButtonText}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              Reset
+            </Text>
+          </TouchableOpacity>
+          <Text 
+            style={styles.headerTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Clinical Assessment
+          </Text>
+          <View style={styles.placeholder} />
         </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
 
         <View style={styles.scoreDisplay}>
-          <Text style={styles.scoreLabel}>Current PEDSS Score</Text>
+          <Text 
+            style={styles.scoreLabel}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Current PEDSS Score
+          </Text>
           <Text style={styles.scoreValue}>{currentScore}/6</Text>
         </View>
 
         {/* P - Premorbid PCPCS */}
         <View style={styles.parameterCard}>
-          <Text style={styles.cardTitle}>🧠 P - Premorbid PCPCS</Text>
+          <Text 
+            style={styles.cardTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            P - Premorbid PCPCS
+          </Text>
           <Text style={styles.cardDescription}>Pediatric Cerebral Performance Category Scale</Text>
           <View style={styles.options}>
             <TouchableOpacity
               style={[styles.option, parameters.P === 0 && styles.optionSelected]}
               onPress={() => updateParameter('P', 0)}
             >
-              <Text style={[styles.optionText, parameters.P === 0 && styles.optionTextSelected]}>
+              <Text 
+                style={[styles.optionText, parameters.P === 0 && styles.optionTextSelected]}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
                 ≤2 (Normal) - Score: 0
               </Text>
             </TouchableOpacity>
@@ -119,7 +208,12 @@ const AssessmentScreen = ({ navigation, route }) => {
               style={[styles.option, parameters.P === 1 && styles.optionSelected]}
               onPress={() => updateParameter('P', 1)}
             >
-              <Text style={[styles.optionText, parameters.P === 1 && styles.optionTextSelected]}>
+              <Text 
+                style={[styles.optionText, parameters.P === 1 && styles.optionTextSelected]}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
                 >2 (Abnormal) - Score: 1
               </Text>
             </TouchableOpacity>
@@ -128,14 +222,26 @@ const AssessmentScreen = ({ navigation, route }) => {
 
         {/* E - EEG Background */}
         <View style={styles.parameterCard}>
-          <Text style={styles.cardTitle}>📊 E - EEG Background</Text>
+          <Text 
+            style={styles.cardTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            E - EEG Background
+          </Text>
           <Text style={styles.cardDescription}>30-minute EEG at 6-12 hours (paucity of sleep markers with continuous diffuse delta activity or low voltage slow unreactive activity or NCSE)</Text>
           <View style={styles.options}>
             <TouchableOpacity
               style={[styles.option, parameters.E === 0 && styles.optionSelected]}
               onPress={() => updateParameter('E', 0)}
             >
-              <Text style={[styles.optionText, parameters.E === 0 && styles.optionTextSelected]}>
+              <Text 
+                style={[styles.optionText, parameters.E === 0 && styles.optionTextSelected]}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
                 Normal - Score: 0
               </Text>
             </TouchableOpacity>
@@ -143,7 +249,12 @@ const AssessmentScreen = ({ navigation, route }) => {
               style={[styles.option, parameters.E === 1 && styles.optionSelected]}
               onPress={() => updateParameter('E', 1)}
             >
-              <Text style={[styles.optionText, parameters.E === 1 && styles.optionTextSelected]}>
+              <Text 
+                style={[styles.optionText, parameters.E === 1 && styles.optionTextSelected]}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
                 Abnormal - Score: 1
               </Text>
             </TouchableOpacity>
@@ -152,14 +263,26 @@ const AssessmentScreen = ({ navigation, route }) => {
 
         {/* D - Drug Refractoriness */}
         <View style={styles.parameterCard}>
-          <Text style={styles.cardTitle}>💊 D - Drug Refractoriness</Text>
+          <Text 
+            style={styles.cardTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            D - Drug Refractoriness
+          </Text>
           <Text style={styles.cardDescription}>Response to treatment</Text>
           <View style={styles.options}>
             <TouchableOpacity
               style={[styles.option, parameters.D === 0 && styles.optionSelected]}
               onPress={() => updateParameter('D', 0)}
             >
-              <Text style={[styles.optionText, parameters.D === 0 && styles.optionTextSelected]}>
+              <Text 
+                style={[styles.optionText, parameters.D === 0 && styles.optionTextSelected]}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
                 None - Score: 0
               </Text>
             </TouchableOpacity>
@@ -167,7 +290,12 @@ const AssessmentScreen = ({ navigation, route }) => {
               style={[styles.option, parameters.D === 1 && styles.optionSelected]}
               onPress={() => updateParameter('D', 1)}
             >
-              <Text style={[styles.optionText, parameters.D === 1 && styles.optionTextSelected]}>
+              <Text 
+                style={[styles.optionText, parameters.D === 1 && styles.optionTextSelected]}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
                 BDZR - Score: 1
               </Text>
             </TouchableOpacity>
@@ -175,7 +303,12 @@ const AssessmentScreen = ({ navigation, route }) => {
               style={[styles.option, parameters.D === 2 && styles.optionSelected]}
               onPress={() => updateParameter('D', 2)}
             >
-              <Text style={[styles.optionText, parameters.D === 2 && styles.optionTextSelected]}>
+              <Text 
+                style={[styles.optionText, parameters.D === 2 && styles.optionTextSelected]}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
                 RSE - Score: 2
               </Text>
             </TouchableOpacity>
@@ -184,14 +317,26 @@ const AssessmentScreen = ({ navigation, route }) => {
 
         {/* S1 - Seizure Semiology */}
         <View style={styles.parameterCard}>
-          <Text style={styles.cardTitle}>🧠 S - Seizure Semiology</Text>
+          <Text 
+            style={styles.cardTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            S1 - Seizure Semiology
+          </Text>
           <Text style={styles.cardDescription}>Seizure type classification</Text>
           <View style={styles.options}>
             <TouchableOpacity
               style={[styles.option, parameters.S1 === 0 && styles.optionSelected]}
               onPress={() => updateParameter('S1', 0)}
             >
-              <Text style={[styles.optionText, parameters.S1 === 0 && styles.optionTextSelected]}>
+              <Text 
+                style={[styles.optionText, parameters.S1 === 0 && styles.optionTextSelected]}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
                 Focal - Score: 0
               </Text>
             </TouchableOpacity>
@@ -199,7 +344,12 @@ const AssessmentScreen = ({ navigation, route }) => {
               style={[styles.option, parameters.S1 === 1 && styles.optionSelected]}
               onPress={() => updateParameter('S1', 1)}
             >
-              <Text style={[styles.optionText, parameters.S1 === 1 && styles.optionTextSelected]}>
+              <Text 
+                style={[styles.optionText, parameters.S1 === 1 && styles.optionTextSelected]}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
                 Generalized - Score: 1
               </Text>
             </TouchableOpacity>
@@ -208,7 +358,14 @@ const AssessmentScreen = ({ navigation, route }) => {
 
         {/* S2 - Critical Sickness */}
         <View style={styles.parameterCard}>
-          <Text style={styles.cardTitle}>🚨 S - Critical Sickness</Text>
+          <Text 
+            style={styles.cardTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            S2 - Critical Sickness
+          </Text>
           <Text style={styles.cardDescription}>Presence of critical conditions</Text>
           <View style={styles.checkboxes}>
             <TouchableOpacity
@@ -216,33 +373,58 @@ const AssessmentScreen = ({ navigation, route }) => {
               onPress={() => updateCriticalSickness('shock')}
             >
               <View style={[styles.checkbox, parameters.S2.shock && styles.checkboxSelected]}>
-                {parameters.S2.shock && <Text style={styles.checkmark}>✓</Text>}
               </View>
-              <Text style={styles.checkboxText}>Shock</Text>
+              <Text 
+                style={styles.checkboxText}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
+                Shock
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.checkboxItem}
               onPress={() => updateCriticalSickness('intubation')}
             >
               <View style={[styles.checkbox, parameters.S2.intubation && styles.checkboxSelected]}>
-                {parameters.S2.intubation && <Text style={styles.checkmark}>✓</Text>}
               </View>
-              <Text style={styles.checkboxText}>ET Intubation</Text>
+              <Text 
+                style={styles.checkboxText}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
+                ET Intubation
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.checkboxItem}
               onPress={() => updateCriticalSickness('mods')}
             >
               <View style={[styles.checkbox, parameters.S2.mods && styles.checkboxSelected]}>
-                {parameters.S2.mods && <Text style={styles.checkmark}>✓</Text>}
               </View>
-              <Text style={styles.checkboxText}>MODS</Text>
+              <Text 
+                style={styles.checkboxText}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
+                MODS
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <TouchableOpacity style={styles.calculateButton} onPress={handleCalculate}>
-          <Text style={styles.calculateButtonText}>📊 Calculate PEDSS Score</Text>
+          <Text 
+            style={styles.calculateButtonText}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Calculate PEDSS Score
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -258,17 +440,38 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     zIndex: 1000,
   },
+  resetButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: '#DC2626',
+    borderRadius: 8,
+    minWidth: 70,
+    alignItems: 'center',
+  },
+  resetButtonText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '600',
+  },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#1E293B',
+    flex: 1,
     textAlign: 'center',
+  },
+  placeholder: {
+    width: 70,
   },
   scoreDisplay: {
     backgroundColor: 'white',
@@ -358,11 +561,6 @@ const styles = StyleSheet.create({
   checkboxSelected: {
     backgroundColor: '#2563EB',
     borderColor: '#2563EB',
-  },
-  checkmark: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   checkboxText: {
     fontSize: 16,

@@ -24,6 +24,12 @@ const ContributorsScreen = ({ navigation }) => {
     'Danishta Ali',
   ];
 
+  const iiitdContributors = [
+    'Tavpritesh Sethi, MBBS, Ph.D.,\nProfessor, Computational Biology, IIIT-Delhi,\nFounding Head, Center of Excellence in Healthcare, IIIT-Delhi',
+    'Pradeep Singh\nResearch Scholar (PhD19208)',
+    'Pawan Yadav\nLead Software Developer',
+  ];
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -32,9 +38,16 @@ const ContributorsScreen = ({ navigation }) => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Contributors</Text>
+        <Text 
+          style={styles.headerTitle}
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          minimumFontScale={0.8}
+        >
+          Contributors
+        </Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -46,29 +59,50 @@ const ContributorsScreen = ({ navigation }) => {
         {/* AIIMS Section */}
         <View style={styles.section}>
           <View style={styles.institutionHeader}>
-            <Text style={styles.institutionTitle}>AIIMS, New Delhi</Text>
+            <Text 
+              style={styles.institutionTitle}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              AIIMS, New Delhi
+            </Text>
           </View>
           
           <View style={styles.contributorsList}>
             {aiimsContributors.map((contributor, index) => (
               <View key={index} style={styles.contributorItem}>
                 <Text style={styles.contributorBullet}>•</Text>
-                <Text style={styles.contributorName}>{contributor}</Text>
+                <Text style={styles.contributorName}>
+                  {contributor}
+                </Text>
               </View>
             ))}
           </View>
         </View>
 
-        {/* IIITD Section - Placeholder for future */}
+        {/* IIITD Section */}
         <View style={styles.section}>
           <View style={styles.institutionHeader}>
-            <Text style={styles.institutionTitle}>IIIT Delhi</Text>
+            <Text 
+              style={styles.institutionTitle}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              IIIT Delhi
+            </Text>
           </View>
           
-          <View style={styles.placeholderSection}>
-            <Text style={styles.placeholderText}>
-              Contributors to be added after discussion with Dr Tavpritesh
-            </Text>
+          <View style={styles.contributorsList}>
+            {iiitdContributors.map((contributor, index) => (
+              <View key={index} style={styles.contributorItem}>
+                <Text style={styles.contributorBullet}>•</Text>
+                <Text style={styles.contributorName}>
+                  {contributor}
+                </Text>
+              </View>
+            ))}
           </View>
         </View>
 
@@ -98,13 +132,15 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: '#2563EB',
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: '600',
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#1E293B',
+    flex: 1,
+    textAlign: 'center',
   },
   placeholder: {
     width: 60,
@@ -138,10 +174,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#E5E7EB',
   },
-  institutionEmoji: {
-    fontSize: 28,
-    marginRight: 12,
-  },
   institutionTitle: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -166,16 +198,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#374151',
     lineHeight: 24,
-  },
-  placeholderSection: {
-    paddingVertical: 20,
-    alignItems: 'center',
-  },
-  placeholderText: {
-    fontSize: 14,
-    color: '#6B7280',
-    fontStyle: 'italic',
-    textAlign: 'center',
+    fontWeight: '400',
   },
   footer: {
     alignItems: 'center',

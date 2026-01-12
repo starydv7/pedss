@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // Import screens
-import SplashScreen from '../screens/SplashScreen';
 import LandingScreen from '../screens/LandingScreen';
 import HomeScreen from '../screens/HomeScreen';
 import CaseHistoryScreen from '../screens/CaseHistoryScreen';
@@ -17,7 +16,6 @@ const Stack = createStackNavigator();
 
 // Route names constants for consistency
 export const ROUTES = {
-  SPLASH: 'Splash',
   LANDING: 'Landing',
   HOME: 'Home',
   PATIENT_INFO: 'PatientInfo',
@@ -34,7 +32,7 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={ROUTES.SPLASH}
+        initialRouteName={ROUTES.LANDING}
         screenOptions={{
           headerShown: false,
           cardStyleInterpolator: ({ current, next, layouts }) => {
@@ -67,11 +65,6 @@ export default function AppNavigator() {
           },
         }}
       >
-        <Stack.Screen 
-          name={ROUTES.SPLASH} 
-          component={SplashScreen}
-          options={{ gestureEnabled: false }}
-        />
         <Stack.Screen 
           name={ROUTES.LANDING} 
           component={LandingScreen}

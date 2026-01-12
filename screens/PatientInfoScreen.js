@@ -73,11 +73,18 @@ const PatientInfoScreen = ({ navigation, route }) => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => navigation.goBack()}
         >
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Patient Information</Text>
+        <Text 
+          style={styles.headerTitle}
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          minimumFontScale={0.8}
+        >
+          Patient Information
+        </Text>
         <TouchableOpacity
           style={styles.newPatientButton}
           onPress={() => {
@@ -85,9 +92,18 @@ const PatientInfoScreen = ({ navigation, route }) => {
             setPatientAge('');
             setSelectedGender('');
             setAssessmentDate(new Date().toLocaleDateString());
+            // Also reset Assessment screen
+            navigation.navigate('Assessment', { reset: true });
           }}
         >
-          <Text style={styles.newPatientButtonText}>🆕 New</Text>
+          <Text 
+            style={styles.newPatientButtonText}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            New
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -102,8 +118,14 @@ const PatientInfoScreen = ({ navigation, route }) => {
         {/* Form Card */}
         <View style={styles.formCard}>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardIcon}>📝</Text>
-            <Text style={styles.cardTitle}>Basic Patient Details</Text>
+            <Text 
+              style={styles.cardTitle}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
+            >
+              Basic Patient Details
+            </Text>
           </View>
 
           {/* Patient Name/ID */}
@@ -218,7 +240,6 @@ const PatientInfoScreen = ({ navigation, route }) => {
 
         {/* Info Card */}
         <View style={styles.infoCard}>
-          <Text style={styles.infoIcon}>ℹ️</Text>
           <Text style={styles.infoText}>
             All patient information is stored locally and securely. 
             No data is transmitted to external servers.
@@ -230,7 +251,14 @@ const PatientInfoScreen = ({ navigation, route }) => {
           style={styles.nextButton}
           onPress={validateAndProceed}
         >
-          <Text style={styles.nextButtonText}>Next →</Text>
+          <Text 
+            style={styles.nextButtonText}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
+            Next →
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -263,7 +291,7 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: '#2563EB',
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: '600',
   },
   headerTitle: {
@@ -318,10 +346,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 24,
-  },
-  cardIcon: {
-    fontSize: 24,
-    marginRight: 12,
   },
   cardTitle: {
     fontSize: 20,
@@ -423,10 +447,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderLeftWidth: 4,
     borderLeftColor: '#2563EB',
-  },
-  infoIcon: {
-    fontSize: 20,
-    marginRight: 12,
   },
   infoText: {
     flex: 1,

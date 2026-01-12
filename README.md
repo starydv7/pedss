@@ -396,8 +396,8 @@ This application is proprietary software developed for medical use. All rights r
 
 For support, feedback, or inquiries:
 
-- **Email**: support@pedss.aiims.edu (if applicable)
-- **Institution**: AIIMS, New Delhi
+- **Email**: aiimsiiitd@gmail.com
+- **Institution**: AIIMS, New Delhi × IIIT Delhi
 - **Developer**: Pawan Yadav
 
 ---
