@@ -74,16 +74,6 @@ export default function BottomTabNavigator() {
             <TabIcon icon="🏠" label="Home" focused={focused} />
           ),
         }}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            // Reset PatientInfo form when Home is pressed
-            navigation.navigate('PatientInfo', { reset: true });
-            // Also reset Assessment parameters
-            setTimeout(() => {
-              navigation.navigate('Assessment', { reset: true });
-            }, 100);
-          },
-        })}
       />
       <Tab.Screen
         name="PatientInfo"
