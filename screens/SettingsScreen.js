@@ -9,6 +9,7 @@ import {
   Alert,
   Linking,
 } from 'react-native';
+import { responsive } from '../utils/responsive';
 
 const SettingsScreen = ({ navigation }) => {
 
@@ -80,7 +81,7 @@ const SettingsScreen = ({ navigation }) => {
         </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-
+        <View style={styles.contentContainer}>
         {/* Support Section */}
         <View style={styles.section}>
           <Text 
@@ -217,6 +218,7 @@ const SettingsScreen = ({ navigation }) => {
           </TouchableOpacity>
           <Text style={styles.appInfoVersion}>© 2026 PEDSS APP. All rights reserved.</Text>
         </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -230,45 +232,50 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  contentContainer: {
+    width: '100%',
+    maxWidth: responsive.getMaxContentWidth(),
+    alignSelf: 'center',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: responsive.scalePadding(20),
+    paddingVertical: responsive.scalePadding(16),
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     zIndex: 1000,
   },
   backButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: responsive.scalePadding(8),
+    paddingHorizontal: responsive.scalePadding(12),
   },
   backButtonText: {
     color: '#2563EB',
-    fontSize: 24,
+    fontSize: responsive.scaleFont(24),
     fontWeight: '600',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
     flex: 1,
     textAlign: 'center',
   },
   placeholder: {
-    width: 60,
+    width: responsive.scaleSize(60),
   },
   section: {
-    marginTop: 24,
-    paddingHorizontal: 20,
+    marginTop: responsive.scalePadding(24),
+    paddingHorizontal: responsive.scalePadding(20),
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: 'bold',
     color: '#374151',
-    marginBottom: 12,
+    marginBottom: responsive.scalePadding(12),
   },
   settingsGroup: {
     backgroundColor: 'white',
@@ -286,8 +293,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: responsive.scalePadding(20),
+    paddingVertical: responsive.scalePadding(16),
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
   },
@@ -300,29 +307,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   settingTitle: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: '600',
     color: '#1E293B',
     marginBottom: 2,
   },
   settingSubtitle: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: '#6B7280',
   },
   settingArrow: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     color: '#9CA3AF',
   },
   appInfo: {
     alignItems: 'center',
-    paddingVertical: 40,
-    paddingHorizontal: 20,
+    paddingVertical: responsive.scalePadding(40),
+    paddingHorizontal: responsive.scalePadding(20),
   },
   appInfoText: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
-    marginBottom: 8,
+    marginBottom: responsive.scalePadding(8),
     textAlign: 'center',
   },
   appInfoSubtext: {

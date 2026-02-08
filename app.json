@@ -10,14 +10,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#2563EB"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "package": "com.pedss.app",
+      "package": "com.pedss.clinicalapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#2563EB"
@@ -30,6 +28,20 @@
       }
     },
     "web": {},
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "enableProguardInReleaseBuilds": true,
+            "extraProguardRules": "-keep class com.facebook.react.** { *; }\n-keep class com.facebook.hermes.** { *; }\n-keep class com.swmansion.** { *; }\n-keep class host.exp.** { *; }\n-keepattributes SourceFile,LineNumberTable\n-keepattributes *Annotation*"
+          }
+        }
+      ],
+      ["./plugins/withAndroidApi35"]
+    ],
     "extra": {
       "eas": {
         "projectId": "8cb390e4-382c-4163-91af-b5e700dd0030"

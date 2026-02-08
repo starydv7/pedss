@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import StorageService from '../services/StorageService';
 import ExportService from '../services/ExportService';
+import { responsive } from '../utils/responsive';
 
 const ResultsScreen = ({ navigation, route }) => {
   const [isSaving, setIsSaving] = useState(false);
@@ -173,7 +174,7 @@ const ResultsScreen = ({ navigation, route }) => {
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-
+        <View style={styles.contentContainer}>
         {/* Patient Summary */}
         <View style={styles.patientSummary}>
           <Text 
@@ -392,6 +393,7 @@ const ResultsScreen = ({ navigation, route }) => {
             </Text>
           </TouchableOpacity>
         </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -405,27 +407,32 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  contentContainer: {
+    width: '100%',
+    maxWidth: responsive.getMaxContentWidth(),
+    alignSelf: 'center',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: responsive.scalePadding(20),
+    paddingVertical: responsive.scalePadding(16),
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     zIndex: 1000,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
     textAlign: 'center',
   },
   patientSummary: {
     backgroundColor: 'white',
-    margin: 20,
-    padding: 20,
+    margin: responsive.scalePadding(20),
+    padding: responsive.scalePadding(20),
     borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -434,25 +441,25 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   summaryTitle: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: 'bold',
     color: '#1E293B',
-    marginBottom: 8,
+    marginBottom: responsive.scalePadding(8),
   },
   summaryText: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#374151',
     marginBottom: 4,
   },
   summaryDate: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: '#6B7280',
   },
   scoreContainer: {
     backgroundColor: 'white',
-    marginHorizontal: 20,
-    marginBottom: 20,
-    padding: 30,
+    marginHorizontal: responsive.scalePadding(20),
+    marginBottom: responsive.scalePadding(20),
+    padding: responsive.scalePadding(30),
     borderRadius: 20,
     alignItems: 'center',
     shadowColor: '#000',
@@ -462,19 +469,19 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   scoreLabel: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     color: '#6B7280',
-    marginBottom: 12,
+    marginBottom: responsive.scalePadding(12),
   },
   scoreValue: {
-    fontSize: 48,
+    fontSize: responsive.scaleFont(48),
     fontWeight: 'bold',
     color: '#2563EB',
-    marginBottom: 16,
+    marginBottom: responsive.scalePadding(16),
   },
   scoreProgressBar: {
     width: '100%',
-    height: 8,
+    height: responsive.scaleSize(8),
     backgroundColor: '#E5E7EB',
     borderRadius: 4,
     overflow: 'hidden',
@@ -485,9 +492,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   riskContainer: {
-    marginHorizontal: 20,
-    marginBottom: 20,
-    padding: 20,
+    marginHorizontal: responsive.scalePadding(20),
+    marginBottom: responsive.scalePadding(20),
+    padding: responsive.scalePadding(20),
     borderRadius: 16,
     borderWidth: 2,
     shadowColor: '#000',
@@ -495,30 +502,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
-    minHeight: 100,
+    minHeight: responsive.scaleSize(100),
   },
   riskHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: responsive.scalePadding(12),
   },
   riskTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     flexShrink: 1,
     flexWrap: 'wrap',
   },
   riskDescription: {
-    fontSize: 12,
+    fontSize: responsive.scaleFont(12),
     color: '#374151',
-    lineHeight: 18,
+    lineHeight: responsive.scaleFont(18),
     flexWrap: 'wrap',
   },
   breakdownCard: {
     backgroundColor: 'white',
-    marginHorizontal: 20,
-    marginBottom: 20,
-    padding: 24,
+    marginHorizontal: responsive.scalePadding(20),
+    marginBottom: responsive.scalePadding(20),
+    padding: responsive.scalePadding(24),
     borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -527,28 +534,28 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   breakdownTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
-    marginBottom: 20,
+    marginBottom: responsive.scalePadding(20),
   },
   breakdownItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: responsive.scalePadding(16),
   },
   breakdownLabel: {
-    width: 100,
-    fontSize: 14,
+    width: responsive.scaleSize(100),
+    fontSize: responsive.scaleFont(14),
     color: '#6B7280',
     fontWeight: '500',
   },
   breakdownBar: {
     flex: 1,
-    height: 8,
+    height: responsive.scaleSize(8),
     backgroundColor: '#E5E7EB',
     borderRadius: 4,
-    marginHorizontal: 12,
+    marginHorizontal: responsive.scalePadding(12),
     overflow: 'hidden',
   },
   breakdownFill: {
@@ -557,17 +564,17 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   breakdownValue: {
-    width: 40,
-    fontSize: 14,
+    width: responsive.scaleSize(40),
+    fontSize: responsive.scaleFont(14),
     color: '#374151',
     fontWeight: '600',
     textAlign: 'right',
   },
   interpretationCard: {
     backgroundColor: 'white',
-    marginHorizontal: 20,
-    marginBottom: 20,
-    padding: 24,
+    marginHorizontal: responsive.scalePadding(20),
+    marginBottom: responsive.scalePadding(20),
+    padding: responsive.scalePadding(24),
     borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -576,27 +583,27 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   interpretationTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
-    marginBottom: 16,
+    marginBottom: responsive.scalePadding(16),
   },
   interpretationText: {
-    fontSize: 15,
+    fontSize: responsive.scaleFont(15),
     color: '#374151',
-    lineHeight: 22,
+    lineHeight: responsive.scaleFont(22),
   },
   actionButtons: {
     flexDirection: 'row',
-    marginHorizontal: 20,
-    marginBottom: 20,
-    gap: 12,
+    marginHorizontal: responsive.scalePadding(20),
+    marginBottom: responsive.scalePadding(20),
+    gap: responsive.scalePadding(12),
   },
   actionButton: {
     flex: 1,
     backgroundColor: 'white',
-    paddingVertical: 16,
-    paddingHorizontal: 12,
+    paddingVertical: responsive.scalePadding(16),
+    paddingHorizontal: responsive.scalePadding(12),
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 1,
@@ -608,7 +615,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   actionButtonText: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: '#374151',
     fontWeight: '600',
   },

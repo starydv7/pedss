@@ -1,8 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-
-const { width: screenWidth } = Dimensions.get('window');
+import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
+import { responsive } from '../utils/responsive';
 
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
@@ -15,10 +14,9 @@ const Tab = createBottomTabNavigator();
 
 // Custom tab bar icon component
 const TabIcon = ({ icon, label, focused }) => {
-  // Use shorter labels on small screens (< 360px width)
-  const isSmallScreen = screenWidth < 360;
+  // Use shorter labels only on very small screens (< 360px width)
   const getShortLabel = (fullLabel) => {
-    if (!isSmallScreen) return fullLabel;
+    if (!responsive.isSmallPhone) return fullLabel;
     const shortLabels = {
       'Home': 'Home',
       'Patient': 'Patient',
@@ -30,7 +28,19 @@ const TabIcon = ({ icon, label, focused }) => {
   };
 
   const displayLabel = getShortLabel(label);
-  const fontSize = isSmallScreen ? 9 : 11;
+  // On tablets, use larger font size; on small phones, use smaller
+  const fontSize = responsive.isLargeTablet 
+    ? responsive.scaleFont(14) 
+    : responsive.isTablet 
+    ? responsive.scaleFont(13)
+    : responsive.isSmallPhone 
+    ? responsive.scaleFont(9) 
+    : responsive.scaleFont(11);
+
+  // On phones (not tablets), allow font adjustment to fit text
+  const shouldAdjustFont = !responsive.isTablet;
+  // Allow 2 lines on tablets, 1 line on phones (but phones can adjust font size)
+  const numberOfLines = responsive.isTablet ? 2 : 1;
 
   return (
     <View style={styles.tabIconContainer}>
@@ -43,14 +53,35 @@ const TabIcon = ({ icon, label, focused }) => {
           focused && styles.tabLabelActive,
           { fontSize }
         ]}
-        numberOfLines={1}
-        adjustsFontSizeToFit={true}
-        minimumFontScale={0.8}
+        numberOfLines={numberOfLines}
+        adjustsFontSizeToFit={shouldAdjustFont}
+        minimumFontScale={shouldAdjustFont ? 0.75 : 1}
+        allowFontScaling={false}
+        ellipsizeMode="none"
       >
         {displayLabel}
       </Text>
       {focused && <View style={styles.activeIndicator} />}
     </View>
+  );
+};
+
+// Custom tab bar button to remove width constraints
+const CustomTabBarButton = ({ children, onPress, accessibilityState }) => {
+  const focused = accessibilityState?.selected;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.customTabButton,
+        {
+          opacity: pressed ? 0.7 : 1,
+        },
+      ]}
+    >
+      {children}
+    </Pressable>
   );
 };
 
@@ -64,6 +95,7 @@ export default function BottomTabNavigator() {
         tabBarInactiveTintColor: '#64748B',
         tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,
+        tabBarButton: (props) => <CustomTabBarButton {...props} />,
       }}
     >
       <Tab.Screen
@@ -117,9 +149,9 @@ export default function BottomTabNavigator() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: 70,
-    paddingBottom: 10,
-    paddingTop: 10,
+    height: responsive.scaleSize(70),
+    paddingBottom: responsive.scalePadding(10),
+    paddingTop: responsive.scalePadding(10),
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
@@ -131,15 +163,17 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 8,
+    paddingHorizontal: 0, // Remove horizontal padding to maximize space
   },
   tabIconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     position: 'relative',
+    paddingHorizontal: responsive.isTablet ? responsive.scalePadding(2) : 0,
   },
   tabIcon: {
-    fontSize: 24,
+    fontSize: responsive.scaleFont(24),
     marginBottom: 4,
     opacity: 0.7,
   },
@@ -148,11 +182,12 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1.1 }],
   },
   tabLabel: {
-    fontSize: 11,
+    fontSize: responsive.scaleFont(11),
     color: '#64748B',
     fontWeight: '500',
     textAlign: 'center',
-    maxWidth: '100%',
+    width: '100%',
+    paddingHorizontal: responsive.isTablet ? responsive.scalePadding(1) : 0,
   },
   tabLabelActive: {
     color: '#2563EB',
@@ -161,10 +196,17 @@ const styles = StyleSheet.create({
   activeIndicator: {
     position: 'absolute',
     top: -2,
-    width: 40,
-    height: 3,
+    width: responsive.scaleSize(40),
+    height: responsive.scaleSize(3),
     backgroundColor: '#2563EB',
     borderRadius: 2,
+  },
+  customTabButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: 0,
+    maxWidth: 'none',
   },
 });
 

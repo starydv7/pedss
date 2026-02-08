@@ -6,15 +6,13 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
-  Dimensions,
 } from 'react-native';
-
-const { width, height } = Dimensions.get('window');
+import { responsive } from '../utils/responsive';
 
 const LandingScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <View style={[styles.content, { maxWidth: responsive.getMaxContentWidth() }]}>
         {/* Logo Section */}
         <View style={styles.logoSection}>
           <View style={styles.hospitalIcon}>
@@ -138,47 +136,49 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingVertical: 40,
+    paddingHorizontal: responsive.scalePadding(24),
+    paddingVertical: responsive.scalePadding(40),
     justifyContent: 'space-between',
+    alignSelf: 'center',
+    width: '100%',
   },
   logoSection: {
     alignItems: 'center',
-    marginTop: 60,
+    marginTop: responsive.scalePadding(60),
   },
   hospitalIcon: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: responsive.scaleSize(120),
+    height: responsive.scaleSize(120),
+    borderRadius: responsive.scaleSize(60),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: responsive.scalePadding(24),
     borderWidth: 3,
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   logoCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: responsive.scaleSize(100),
+    height: responsive.scaleSize(100),
+    borderRadius: responsive.scaleSize(50),
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
   },
   pedssIcon: {
-    width: 90,
-    height: 90,
+    width: responsive.scaleSize(90),
+    height: responsive.scaleSize(90),
   },
   appTitle: {
-    fontSize: 48,
+    fontSize: responsive.scaleFont(48),
     fontWeight: 'bold',
     color: 'white',
-    marginBottom: 8,
+    marginBottom: responsive.scalePadding(8),
     letterSpacing: 2,
   },
   appSubtitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
     fontWeight: '500',
@@ -193,31 +193,31 @@ const styles = StyleSheet.create({
   },
   institutionText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: '600',
     marginVertical: 4,
   },
   collaborationAnd: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: 'rgba(255, 255, 255, 0.7)',
     marginVertical: 4,
     fontWeight: '400',
   },
   collaborationText: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: responsive.scaleFont(24),
     maxWidth: '100%',
-    marginTop: 8,
+    marginTop: responsive.scalePadding(8),
   },
   buttonSection: {
     alignItems: 'center',
   },
   primaryButton: {
     backgroundColor: 'white',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
+    paddingVertical: responsive.scalePadding(16),
+    paddingHorizontal: responsive.scalePadding(32),
     borderRadius: 30,
     alignItems: 'center',
     shadowColor: '#000',
@@ -231,32 +231,32 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: '#2563EB',
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
   },
   footer: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: responsive.scalePadding(20),
   },
   footerText: {
     color: 'rgba(255, 255, 255, 0.7)',
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     marginBottom: 4,
     maxWidth: '100%',
   },
   footerSubtext: {
     color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 12,
+    fontSize: responsive.scaleFont(12),
     textAlign: 'center',
     maxWidth: '100%',
   },
   contributorsLinkContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: responsive.scalePadding(20),
   },
   contributorsLinkText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: '500',
     textDecorationLine: 'underline',
     textDecorationColor: 'white',
