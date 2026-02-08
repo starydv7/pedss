@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
+import { responsive } from '../utils/responsive';
 
 const HomeScreen = ({ navigation, route }) => {
 
@@ -80,7 +81,7 @@ const HomeScreen = ({ navigation, route }) => {
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-
+        <View style={styles.contentContainer}>
         {/* Welcome Section */}
         <View style={styles.welcomeSection}>
           <Text 
@@ -215,6 +216,7 @@ const HomeScreen = ({ navigation, route }) => {
                 Medical-grade outcome prediction
               </Text>
             </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -228,12 +230,17 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  contentContainer: {
+    width: '100%',
+    maxWidth: responsive.getMaxContentWidth(),
+    alignSelf: 'center',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: responsive.scalePadding(20),
+    paddingVertical: responsive.scalePadding(16),
     backgroundColor: '#2563EB',
     zIndex: 1000,
   },
@@ -241,35 +248,35 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: responsive.scaleFont(24),
     fontWeight: 'bold',
     color: 'white',
     maxWidth: '100%',
   },
   headerSubtitle: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: 'rgba(255, 255, 255, 0.8)',
     marginTop: 2,
     maxWidth: '100%',
   },
   profileButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: responsive.scaleSize(40),
+    height: responsive.scaleSize(40),
+    borderRadius: responsive.scaleSize(20),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileButtonText: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: '700',
     color: 'white',
   },
   welcomeSection: {
     backgroundColor: 'white',
-    padding: 24,
-    marginHorizontal: 20,
-    marginTop: 20,
+    padding: responsive.scalePadding(24),
+    marginHorizontal: responsive.scalePadding(20),
+    marginTop: responsive.scalePadding(20),
     borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: {
@@ -281,26 +288,26 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   welcomeTitle: {
-    fontSize: 24,
+    fontSize: responsive.scaleFont(24),
     fontWeight: 'bold',
     color: '#1E293B',
-    marginBottom: 8,
+    marginBottom: responsive.scalePadding(8),
     maxWidth: '100%',
   },
   welcomeText: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#64748B',
-    lineHeight: 24,
+    lineHeight: responsive.scaleFont(24),
   },
   section: {
-    marginTop: 24,
-    paddingHorizontal: 20,
+    marginTop: responsive.scalePadding(24),
+    paddingHorizontal: responsive.scalePadding(20),
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: responsive.scaleFont(20),
     fontWeight: 'bold',
     color: '#1E293B',
-    marginBottom: 16,
+    marginBottom: responsive.scalePadding(16),
     maxWidth: '100%',
   },
   quickActionsGrid: {
@@ -330,7 +337,7 @@ const styles = StyleSheet.create({
   },
   featureCard: {
     backgroundColor: 'white',
-    padding: 20,
+    padding: responsive.scalePadding(20),
     borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
@@ -347,26 +354,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   featureTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
     marginBottom: 4,
     maxWidth: '100%',
   },
   featureDescription: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: '#64748B',
-    lineHeight: 20,
+    lineHeight: responsive.scaleFont(20),
   },
   featureArrow: {
-    fontSize: 20,
+    fontSize: responsive.scaleFont(20),
     color: '#2563EB',
     fontWeight: 'bold',
   },
   infoSection: {
     backgroundColor: 'white',
-    margin: 20,
-    padding: 24,
+    margin: responsive.scalePadding(20),
+    padding: responsive.scalePadding(24),
     borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: {
@@ -378,40 +385,40 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   infoTitle: {
-    fontSize: 20,
+    fontSize: responsive.scaleFont(20),
     fontWeight: 'bold',
     color: '#1E293B',
-    marginBottom: 12,
+    marginBottom: responsive.scalePadding(12),
     maxWidth: '100%',
   },
   infoText: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#64748B',
-    lineHeight: 24,
-    marginBottom: 16,
+    lineHeight: responsive.scaleFont(24),
+    marginBottom: responsive.scalePadding(16),
   },
   scoreInfo: {
     backgroundColor: '#F8FAFC',
-    padding: 16,
+    padding: responsive.scalePadding(16),
     borderRadius: 12,
   },
   scoreInfoTitle: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: 'bold',
     color: '#2563EB',
-    marginBottom: 8,
+    marginBottom: responsive.scalePadding(8),
   },
   scoreBreakdown: {
     gap: 4,
   },
   scoreItem: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: '#374151',
   },
   riskSection: {
-    margin: 20,
+    margin: responsive.scalePadding(20),
     backgroundColor: 'white',
-    padding: 24,
+    padding: responsive.scalePadding(24),
     borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: {
@@ -423,19 +430,19 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   riskTitle: {
-    fontSize: 20,
+    fontSize: responsive.scaleFont(20),
     fontWeight: 'bold',
     color: '#1E293B',
-    marginBottom: 16,
+    marginBottom: responsive.scalePadding(16),
     maxWidth: '100%',
   },
   riskLevels: {
-    gap: 12,
+    gap: responsive.scalePadding(12),
   },
   riskLevel: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    padding: responsive.scalePadding(12),
     borderRadius: 8,
   },
   lowRisk: {
@@ -448,24 +455,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEF2F2',
   },
   riskText: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: '600',
     color: '#374151',
     maxWidth: '100%',
   },
   footer: {
     alignItems: 'center',
-    padding: 20,
-    marginTop: 20,
+    padding: responsive.scalePadding(20),
+    marginTop: responsive.scalePadding(20),
   },
   footerText: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: '#64748B',
     fontWeight: '600',
     maxWidth: '100%',
   },
   footerSubtext: {
-    fontSize: 12,
+    fontSize: responsive.scaleFont(12),
     color: '#9CA3AF',
     marginTop: 4,
     maxWidth: '100%',

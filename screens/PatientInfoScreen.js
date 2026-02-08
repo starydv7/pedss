@@ -9,6 +9,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import { responsive } from '../utils/responsive';
 
 const PatientInfoScreen = ({ navigation, route }) => {
   const [patientName, setPatientName] = useState('');
@@ -108,6 +109,7 @@ const PatientInfoScreen = ({ navigation, route }) => {
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.contentContainer}>
         {/* Progress Bar */}
         <View style={styles.progressBarContainer}>
           <View style={styles.progressBar}>
@@ -260,6 +262,7 @@ const PatientInfoScreen = ({ navigation, route }) => {
             Next →
           </Text>
         </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -273,12 +276,17 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  contentContainer: {
+    width: '100%',
+    maxWidth: responsive.getMaxContentWidth(),
+    alignSelf: 'center',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: responsive.scalePadding(20),
+    paddingVertical: responsive.scalePadding(16),
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
@@ -291,32 +299,32 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: '#2563EB',
-    fontSize: 24,
+    fontSize: responsive.scaleFont(24),
     fontWeight: '600',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
     flex: 1,
     textAlign: 'center',
   },
   newPatientButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: responsive.scalePadding(6),
+    paddingHorizontal: responsive.scalePadding(12),
     backgroundColor: '#2563EB',
     borderRadius: 8,
-    minWidth: 60,
+    minWidth: responsive.scaleSize(60),
     alignItems: 'center',
   },
   newPatientButtonText: {
     color: 'white',
-    fontSize: 13,
+    fontSize: responsive.scaleFont(13),
     fontWeight: '600',
   },
   progressBarContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingHorizontal: responsive.scalePadding(20),
+    paddingVertical: responsive.scalePadding(12),
   },
   progressBar: {
     height: 4,
@@ -330,9 +338,9 @@ const styles = StyleSheet.create({
   },
   formCard: {
     backgroundColor: 'white',
-    margin: 20,
+    margin: responsive.scalePadding(20),
     borderRadius: 16,
-    padding: 24,
+    padding: responsive.scalePadding(24),
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -345,34 +353,34 @@ const styles = StyleSheet.create({
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: responsive.scalePadding(24),
   },
   cardTitle: {
-    fontSize: 20,
+    fontSize: responsive.scaleFont(20),
     fontWeight: 'bold',
     color: '#1E293B',
   },
   inputGroup: {
-    marginBottom: 24,
+    marginBottom: responsive.scalePadding(24),
   },
   inputLabel: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: '600',
     color: '#374151',
-    marginBottom: 8,
+    marginBottom: responsive.scalePadding(8),
   },
   textInput: {
     borderWidth: 1,
     borderColor: '#D1D5DB',
     borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
+    paddingHorizontal: responsive.scalePadding(16),
+    paddingVertical: responsive.scalePadding(12),
+    fontSize: responsive.scaleFont(16),
     color: '#1E293B',
     backgroundColor: '#F9FAFB',
   },
   inputHint: {
-    fontSize: 12,
+    fontSize: responsive.scaleFont(12),
     color: '#6B7280',
     marginTop: 4,
   },
@@ -382,8 +390,8 @@ const styles = StyleSheet.create({
   radioOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: responsive.scalePadding(12),
+    paddingHorizontal: responsive.scalePadding(16),
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#D1D5DB',
@@ -394,12 +402,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFF6FF',
   },
   radioCircle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: responsive.scaleSize(20),
+    height: responsive.scaleSize(20),
+    borderRadius: responsive.scaleSize(10),
     borderWidth: 2,
     borderColor: '#D1D5DB',
-    marginRight: 12,
+    marginRight: responsive.scalePadding(12),
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -407,13 +415,13 @@ const styles = StyleSheet.create({
     borderColor: '#2563EB',
   },
   radioInner: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: responsive.scaleSize(10),
+    height: responsive.scaleSize(10),
+    borderRadius: responsive.scaleSize(5),
     backgroundColor: '#2563EB',
   },
   radioText: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#374151',
   },
   radioTextSelected: {
@@ -424,41 +432,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: responsive.scalePadding(12),
+    paddingHorizontal: responsive.scalePadding(16),
     backgroundColor: '#F3F4F6',
     borderRadius: 12,
   },
   dateText: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#1E293B',
     fontWeight: '500',
   },
   dateSubtext: {
-    fontSize: 12,
+    fontSize: responsive.scaleFont(12),
     color: '#6B7280',
   },
   infoCard: {
     flexDirection: 'row',
     backgroundColor: '#EFF6FF',
-    marginHorizontal: 20,
-    marginBottom: 20,
-    padding: 16,
+    marginHorizontal: responsive.scalePadding(20),
+    marginBottom: responsive.scalePadding(20),
+    padding: responsive.scalePadding(16),
     borderRadius: 12,
     borderLeftWidth: 4,
     borderLeftColor: '#2563EB',
   },
   infoText: {
     flex: 1,
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: '#1E40AF',
-    lineHeight: 20,
+    lineHeight: responsive.scaleFont(20),
   },
   nextButton: {
     backgroundColor: '#2563EB',
-    marginHorizontal: 20,
-    marginBottom: 32,
-    paddingVertical: 16,
+    marginHorizontal: responsive.scalePadding(20),
+    marginBottom: responsive.scalePadding(32),
+    paddingVertical: responsive.scalePadding(16),
     borderRadius: 16,
     alignItems: 'center',
     shadowColor: '#2563EB',
@@ -472,7 +480,7 @@ const styles = StyleSheet.create({
   },
   nextButtonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
   },
 });

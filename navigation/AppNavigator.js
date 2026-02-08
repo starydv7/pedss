@@ -35,40 +35,15 @@ export default function AppNavigator() {
         initialRouteName={ROUTES.LANDING}
         screenOptions={{
           headerShown: false,
-          cardStyleInterpolator: ({ current, next, layouts }) => {
-            return {
-              cardStyle: {
-                transform: [
-                  {
-                    translateX: current.progress.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [layouts.screen.width, 0],
-                    }),
-                  },
-                ],
-              },
-            };
-          },
-          transitionSpec: {
-            open: {
-              animation: 'timing',
-              config: {
-                duration: 300,
-              },
-            },
-            close: {
-              animation: 'timing',
-              config: {
-                duration: 300,
-              },
-            },
-          },
         }}
       >
         <Stack.Screen 
           name={ROUTES.LANDING} 
           component={LandingScreen}
-          options={{ gestureEnabled: false }}
+          options={{ 
+            gestureEnabled: false,
+            animationEnabled: false,
+          }}
         />
         <Stack.Screen 
           name={ROUTES.HOME} 

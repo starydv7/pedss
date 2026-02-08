@@ -9,6 +9,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import { responsive } from '../utils/responsive';
 
 const AssessmentScreen = ({ navigation, route }) => {
   const [parameters, setParameters] = useState({
@@ -166,7 +167,7 @@ const AssessmentScreen = ({ navigation, route }) => {
         </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-
+        <View style={styles.contentContainer}>
         <View style={styles.scoreDisplay}>
           <Text 
             style={styles.scoreLabel}
@@ -426,6 +427,7 @@ const AssessmentScreen = ({ navigation, route }) => {
             Calculate PEDSS Score
           </Text>
         </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -439,44 +441,49 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  contentContainer: {
+    width: '100%',
+    maxWidth: responsive.getMaxContentWidth(),
+    alignSelf: 'center',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: responsive.scalePadding(20),
+    paddingVertical: responsive.scalePadding(16),
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     zIndex: 1000,
   },
   resetButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: responsive.scalePadding(6),
+    paddingHorizontal: responsive.scalePadding(12),
     backgroundColor: '#DC2626',
     borderRadius: 8,
-    minWidth: 70,
+    minWidth: responsive.scaleSize(70),
     alignItems: 'center',
   },
   resetButtonText: {
     color: 'white',
-    fontSize: 13,
+    fontSize: responsive.scaleFont(13),
     fontWeight: '600',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
     flex: 1,
     textAlign: 'center',
   },
   placeholder: {
-    width: 70,
+    width: responsive.scaleSize(70),
   },
   scoreDisplay: {
     backgroundColor: 'white',
-    margin: 20,
-    padding: 20,
+    margin: responsive.scalePadding(20),
+    padding: responsive.scalePadding(20),
     borderRadius: 16,
     alignItems: 'center',
     shadowColor: '#000',
@@ -486,20 +493,20 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   scoreLabel: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#6B7280',
-    marginBottom: 8,
+    marginBottom: responsive.scalePadding(8),
   },
   scoreValue: {
-    fontSize: 32,
+    fontSize: responsive.scaleFont(32),
     fontWeight: 'bold',
     color: '#2563EB',
   },
   parameterCard: {
     backgroundColor: 'white',
-    marginHorizontal: 20,
-    marginBottom: 16,
-    padding: 20,
+    marginHorizontal: responsive.scalePadding(20),
+    marginBottom: responsive.scalePadding(16),
+    padding: responsive.scalePadding(20),
     borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -508,32 +515,32 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
-    marginBottom: 8,
+    marginBottom: responsive.scalePadding(8),
   },
   cardDescription: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: '#6B7280',
-    marginBottom: 16,
+    marginBottom: responsive.scalePadding(16),
   },
   options: {
-    gap: 12,
+    gap: responsive.scalePadding(12),
   },
   option: {
     backgroundColor: '#F9FAFB',
     borderWidth: 1,
     borderColor: '#D1D5DB',
     borderRadius: 12,
-    padding: 16,
+    padding: responsive.scalePadding(16),
   },
   optionSelected: {
     backgroundColor: '#EFF6FF',
     borderColor: '#2563EB',
   },
   optionText: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#374151',
   },
   optionTextSelected: {
@@ -541,19 +548,19 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   checkboxes: {
-    gap: 12,
+    gap: responsive.scalePadding(12),
   },
   checkboxItem: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   checkbox: {
-    width: 24,
-    height: 24,
+    width: responsive.scaleSize(24),
+    height: responsive.scaleSize(24),
     borderRadius: 6,
     borderWidth: 2,
     borderColor: '#D1D5DB',
-    marginRight: 12,
+    marginRight: responsive.scalePadding(12),
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F9FAFB',
@@ -563,13 +570,13 @@ const styles = StyleSheet.create({
     borderColor: '#2563EB',
   },
   checkboxText: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#374151',
   },
   calculateButton: {
     backgroundColor: '#2563EB',
-    margin: 20,
-    paddingVertical: 16,
+    margin: responsive.scalePadding(20),
+    paddingVertical: responsive.scalePadding(16),
     borderRadius: 16,
     alignItems: 'center',
     shadowColor: '#2563EB',
@@ -580,7 +587,7 @@ const styles = StyleSheet.create({
   },
   calculateButtonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
   },
 });

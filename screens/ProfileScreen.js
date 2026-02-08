@@ -10,8 +10,8 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import StorageService from '../services/StorageService';
+import { responsive } from '../utils/responsive';
 
 const ProfileScreen = ({ navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -23,26 +23,12 @@ const ProfileScreen = ({ navigation }) => {
     email: '',
     phone: '',
   });
-  const [stats, setStats] = useState({
-    totalAssessments: 0,
-    highRiskCases: 0,
-    mediumRiskCases: 0,
-    lowRiskCases: 0,
-  });
 
   const [tempData, setTempData] = useState(profileData);
 
   useEffect(() => {
     loadProfile();
-    loadStatistics();
   }, []);
-
-  // Reload statistics when screen is focused (user navigates to this tab)
-  useFocusEffect(
-    React.useCallback(() => {
-      loadStatistics();
-    }, [])
-  );
 
   const loadProfile = async () => {
     try {
@@ -55,20 +41,6 @@ const ProfileScreen = ({ navigation }) => {
       console.error('Error loading profile:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadStatistics = async () => {
-    try {
-      const statistics = await StorageService.getStatistics();
-      setStats({
-        totalAssessments: statistics.total,
-        highRiskCases: statistics.highRisk,
-        mediumRiskCases: statistics.mediumRisk,
-        lowRiskCases: statistics.lowRisk,
-      });
-    } catch (error) {
-      console.error('Error loading statistics:', error);
     }
   };
 
@@ -95,13 +67,6 @@ const ProfileScreen = ({ navigation }) => {
   const handleChangeText = (field, value) => {
     setTempData({ ...tempData, [field]: value });
   };
-
-  const statsData = [
-    { label: 'Total Assessments', value: stats.totalAssessments.toString() },
-    { label: 'High Risk Cases', value: stats.highRiskCases.toString() },
-    { label: 'Medium Risk Cases', value: stats.mediumRiskCases.toString() },
-    { label: 'Low Risk Cases', value: stats.lowRiskCases.toString() },
-  ];
 
   if (loading) {
     return (
@@ -153,7 +118,7 @@ const ProfileScreen = ({ navigation }) => {
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-
+        <View style={styles.contentContainer}>
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
@@ -195,40 +160,6 @@ const ProfileScreen = ({ navigation }) => {
               {isEditing ? tempData.hospital : profileData.hospital}
             </Text>
           ) : null}
-        </View>
-
-        {/* Statistics */}
-        <View style={styles.statsSection}>
-          <Text 
-            style={styles.sectionTitle}
-            numberOfLines={1}
-            adjustsFontSizeToFit={true}
-            minimumFontScale={0.8}
-          >
-            Your Statistics
-          </Text>
-          <View style={styles.statsGrid}>
-            {statsData.map((stat, index) => (
-              <View key={index} style={styles.statCard}>
-                <Text 
-                  style={styles.statValue}
-                  numberOfLines={1}
-                  adjustsFontSizeToFit={true}
-                  minimumFontScale={0.8}
-                >
-                  {stat.value}
-                </Text>
-                <Text 
-                  style={styles.statLabel}
-                  numberOfLines={1}
-                  adjustsFontSizeToFit={true}
-                  minimumFontScale={0.8}
-                >
-                  {stat.label}
-                </Text>
-              </View>
-            ))}
-          </View>
         </View>
 
         {/* Profile Information */}
@@ -358,8 +289,7 @@ const ProfileScreen = ({ navigation }) => {
             </View>
           </View>
         </View>
-
-
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -373,55 +303,60 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  contentContainer: {
+    width: '100%',
+    maxWidth: responsive.getMaxContentWidth(),
+    alignSelf: 'center',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: responsive.scalePadding(20),
+    paddingVertical: responsive.scalePadding(16),
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     zIndex: 1000,
   },
   backButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: responsive.scalePadding(8),
+    paddingHorizontal: responsive.scalePadding(12),
   },
   backButtonText: {
     color: '#2563EB',
-    fontSize: 24,
+    fontSize: responsive.scaleFont(24),
     fontWeight: '600',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
     flex: 1,
     textAlign: 'center',
   },
   settingsButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: responsive.scalePadding(8),
+    paddingHorizontal: responsive.scalePadding(12),
   },
   settingsButtonText: {
-    fontSize: 20,
+    fontSize: responsive.scaleFont(20),
   },
   profileHeader: {
     alignItems: 'center',
-    paddingVertical: 30,
+    paddingVertical: responsive.scalePadding(30),
     backgroundColor: 'white',
-    marginBottom: 20,
+    marginBottom: responsive.scalePadding(20),
   },
   avatarContainer: {
     position: 'relative',
-    marginBottom: 16,
+    marginBottom: responsive.scalePadding(16),
     alignItems: 'center',
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: responsive.scaleSize(100),
+    height: responsive.scaleSize(100),
+    borderRadius: responsive.scaleSize(50),
     backgroundColor: '#EFF6FF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -429,7 +364,7 @@ const styles = StyleSheet.create({
     borderColor: '#2563EB',
   },
   avatarText: {
-    fontSize: 48,
+    fontSize: responsive.scaleFont(48),
     fontWeight: 'bold',
     color: '#2563EB',
   },
@@ -439,101 +374,65 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    marginTop: 16,
-    fontSize: 16,
+    marginTop: responsive.scalePadding(16),
+    fontSize: responsive.scaleFont(16),
     color: '#6B7280',
   },
   profileName: {
-    fontSize: 24,
+    fontSize: responsive.scaleFont(24),
     fontWeight: 'bold',
     color: '#1E293B',
     marginBottom: 4,
   },
   profileTitle: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#2563EB',
     fontWeight: '600',
     marginBottom: 4,
   },
   profileHospital: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: '#6B7280',
-  },
-  statsSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
-    marginBottom: 16,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  statCard: {
-    width: '48%',
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 16,
-    alignItems: 'center',
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2563EB',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#6B7280',
-    textAlign: 'center',
+    marginBottom: responsive.scalePadding(16),
   },
   infoSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingHorizontal: responsive.scalePadding(20),
+    marginBottom: responsive.scalePadding(20),
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: responsive.scalePadding(16),
   },
   editButton: {
     color: '#2563EB',
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: '600',
   },
   editActions: {
     flexDirection: 'row',
-    gap: 16,
+    gap: responsive.scalePadding(16),
   },
   cancelButton: {
     color: '#DC2626',
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: '600',
   },
   saveButton: {
     color: '#16A34A',
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     fontWeight: '600',
   },
   infoCard: {
     backgroundColor: 'white',
     borderRadius: 16,
-    padding: 20,
+    padding: responsive.scalePadding(20),
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -544,25 +443,25 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   infoItem: {
-    marginBottom: 20,
+    marginBottom: responsive.scalePadding(20),
   },
   infoLabel: {
-    fontSize: 14,
+    fontSize: responsive.scaleFont(14),
     color: '#6B7280',
-    marginBottom: 8,
+    marginBottom: responsive.scalePadding(8),
     fontWeight: '500',
   },
   infoValue: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#1E293B',
     fontWeight: '600',
   },
   infoInput: {
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#1E293B',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
-    paddingVertical: 8,
+    paddingVertical: responsive.scalePadding(8),
   },
   specializationsSection: {
     paddingHorizontal: 20,

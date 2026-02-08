@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
+import { responsive } from '../utils/responsive';
 
 const ContributorsScreen = ({ navigation }) => {
   const aiimsContributors = [
@@ -56,6 +57,7 @@ const ContributorsScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={true}
         contentContainerStyle={styles.scrollContent}
       >
+        <View style={styles.contentContainer}>
         {/* AIIMS Section */}
         <View style={styles.section}>
           <View style={styles.institutionHeader}>
@@ -105,7 +107,7 @@ const ContributorsScreen = ({ navigation }) => {
             ))}
           </View>
         </View>
-
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -120,43 +122,48 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: responsive.scalePadding(20),
+    paddingVertical: responsive.scalePadding(16),
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
   },
   backButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: responsive.scalePadding(8),
+    paddingHorizontal: responsive.scalePadding(12),
   },
   backButtonText: {
     color: '#2563EB',
-    fontSize: 24,
+    fontSize: responsive.scaleFont(24),
     fontWeight: '600',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     fontWeight: 'bold',
     color: '#1E293B',
     flex: 1,
     textAlign: 'center',
   },
   placeholder: {
-    width: 60,
+    width: responsive.scaleSize(60),
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: responsive.scalePadding(20),
+  },
+  contentContainer: {
+    width: '100%',
+    maxWidth: responsive.getMaxContentWidth(),
+    alignSelf: 'center',
   },
   section: {
     backgroundColor: 'white',
-    margin: 20,
-    marginBottom: 16,
+    margin: responsive.scalePadding(20),
+    marginBottom: responsive.scalePadding(16),
     borderRadius: 16,
-    padding: 24,
+    padding: responsive.scalePadding(24),
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -169,35 +176,35 @@ const styles = StyleSheet.create({
   institutionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
-    paddingBottom: 16,
+    marginBottom: responsive.scalePadding(20),
+    paddingBottom: responsive.scalePadding(16),
     borderBottomWidth: 2,
     borderBottomColor: '#E5E7EB',
   },
   institutionTitle: {
-    fontSize: 22,
+    fontSize: responsive.scaleFont(22),
     fontWeight: 'bold',
     color: '#1E293B',
   },
   contributorsList: {
-    gap: 12,
+    gap: responsive.scalePadding(12),
   },
   contributorItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    paddingVertical: 8,
+    paddingVertical: responsive.scalePadding(8),
   },
   contributorBullet: {
-    fontSize: 18,
+    fontSize: responsive.scaleFont(18),
     color: '#2563EB',
-    marginRight: 12,
+    marginRight: responsive.scalePadding(12),
     marginTop: 2,
   },
   contributorName: {
     flex: 1,
-    fontSize: 16,
+    fontSize: responsive.scaleFont(16),
     color: '#374151',
-    lineHeight: 24,
+    lineHeight: responsive.scaleFont(24),
     fontWeight: '400',
   },
   footer: {
